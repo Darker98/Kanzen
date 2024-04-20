@@ -1,6 +1,7 @@
 
 public class Card {
 
+
     private int id;
     private String title;
     private String description;
@@ -11,8 +12,6 @@ public class Card {
     private Date date;
     private Date dateCreated;
     private ArrayList<Member> assigned;
-
-
 
 
     public Card(int id, String title, String description, String status,
@@ -31,14 +30,11 @@ public class Card {
     }
 
 
-
-
-
     public void setID(int id){
         this.id = id;
     }
 
-    public int getID(int id){
+    public int getID(){
         return id;
     }
 
@@ -46,7 +42,7 @@ public class Card {
         this.title = title;
     }
 
-    public String getTitle(String tile){
+    public String getTitle(){
         return title;
 
     }
@@ -55,7 +51,7 @@ public class Card {
         this.description = description;
     }
 
-    public String getDescription(String description){
+    public String getDescription(){
         return description;
     }
 
@@ -63,25 +59,23 @@ public class Card {
         this.status= status;
     }
 
-    public String getStatus(String status){
+    public String getStatus(){
         return status;
-
     }
 
     public void setLabel(String label){
         this.label= label;
     }
 
-    public String getLabel(String label){
+    public String getLabel(){
         return label;
-
     }
 
     public void setBlocked (boolean blocked){
         this.blocked = blocked;
     }
 
-    public boolean getBlocked(boolean blocked){
+    public boolean getBlocked(){
         return blocked;
     }
 
@@ -89,7 +83,7 @@ public class Card {
         this.urgent= urgent;
     }
 
-    public boolean getUrgent(boolean urgent){
+    public boolean getUrgent(){
         return urgent;
     }
 
@@ -97,15 +91,19 @@ public class Card {
         this.date = date;
     }
 
-    public Date getDate(Date date){
+    public Date getDate(){
         return date;
     }
     public void setDateCreated(Date dateCreated){
         this.dateCreated = dateCreated;
     }
 
-    public Date getDateCreated(Date dateCreated){
+    public Date getDateCreated(){
         return dateCreated;
+    }
+
+    public ArrayList<Member> getMembers() {
+        return assigned;
     }
 
 
@@ -120,10 +118,6 @@ public class Card {
         assigned.remove(index);
     }
 
-    public ArrayList<Member> getMembers() {
-
-        return assigned;
-    }
 
 }
 
