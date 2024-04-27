@@ -1,7 +1,4 @@
-
 public class Card {
-
-
     private int id;
     private String title;
     private String description;
@@ -13,10 +10,9 @@ public class Card {
     private Date dateCreated;
     private ArrayList<Member> assigned;
 
-
+    // Constructor
     public Card(int id, String title, String description, String status,
                 String label, boolean blocked, boolean urgent, Date date) {
-
         this.id = id;
         this.title = title;
         this.description = description;
@@ -26,7 +22,7 @@ public class Card {
         this.urgent = urgent;
         this.date = date;
         this.dateCreated = new Date(); // Automatically set to current creation date
-        this.assigned = new ArrayList<>();
+        this.assigned = new ArrayList<Member>();
     }
 
 
@@ -47,7 +43,7 @@ public class Card {
 
     }
 
-    public void setDescription(String Description){
+    public void setDescription(String description){
         this.description = description;
     }
 
@@ -118,6 +114,15 @@ public class Card {
         assigned.remove(index);
     }
 
-
+    public void updateCard(Card card) {
+        id = card.id;
+        title = new String(card.title);
+        description = new String(card.description);
+        status = new String(card.status);
+        label = new String(card.label);
+        blocked = card.blocked;
+        urgent = card.urgent;
+        date = new Date(card.date);
+        assigned = new ArrayList<Member>(card.assigned); // TODO: Fix
+    }
 }
-
