@@ -29,6 +29,12 @@
     -fx-background-color: -slate-green;
 }
 
+.issue-list-cell.important .content {
+    -fx-background-color: #e32b2b;
+}
+
+
+
 .issue-list-cell .label {
     -fx-font-size: 1.5em;
     -fx-text-fill: white;

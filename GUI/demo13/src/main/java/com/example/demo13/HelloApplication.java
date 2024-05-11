@@ -7,15 +7,18 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -32,15 +35,75 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         stage.initStyle(StageStyle.DECORATED.UNDECORATED);
 
-        // Create menu items
-        MenuItem exitMenuItem = new MenuItem("Exit");
-        exitMenuItem.setOnAction(event -> System.exit(0));
+        BorderPane loginbox = new BorderPane();
+        loginbox.setPrefSize(769, 523);
 
-        Menu fileMenu = new Menu("File");
-        fileMenu.getItems().addAll(exitMenuItem);
+        // Left side
+        AnchorPane leftAnchorPane = new AnchorPane();
+        leftAnchorPane.setPrefSize(401, 523);
+        leftAnchorPane.setStyle("-fx-background-color: #0598ff;");
 
-        MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(fileMenu);
+        Label titleLabel = new Label("\"KanZen, The Choice of Professionals.\"");
+        titleLabel.setTextFill(Color.web("#fffbfb"));
+        titleLabel.setFont(Font.font("3DS Fonticon", 23));
+        titleLabel.setAlignment(javafx.geometry.Pos.CENTER);
+        titleLabel.setLayoutX(-1);
+        titleLabel.setLayoutY(355);
+        titleLabel.setPrefWidth(406);
+        titleLabel.setPrefHeight(66);
+
+        ImageView logoImageView = new ImageView();
+        logoImageView.setImage(new Image("file:src/main/logo with text.png"));
+        logoImageView.setFitWidth(243);
+        logoImageView.setFitHeight(251);
+        logoImageView.setLayoutX(81);
+        logoImageView.setLayoutY(26);
+        logoImageView.setPreserveRatio(true);
+        logoImageView.setPickOnBounds(true);
+
+        leftAnchorPane.getChildren().addAll(titleLabel, logoImageView);
+        loginbox.setLeft(leftAnchorPane);
+
+        // Right side
+        AnchorPane rightAnchorPane = new AnchorPane();
+        rightAnchorPane.setPrefSize(381, 523);
+
+        FontAwesomeIcon icon = new FontAwesomeIcon();
+        icon.setFill(Color.web("#0589ff"));
+        icon.setGlyphName("GROUP");
+        icon.setSize("10em");
+        icon.setLayoutX(119);
+        icon.setLayoutY(166);
+
+        Button memberBtn = new Button("Member");
+        memberBtn.setLayoutX(124);
+        memberBtn.setLayoutY(378);
+        memberBtn.setPrefSize(120, 35);
+        memberBtn.setFont(Font.font("ArtifaktElement-Light", 12));
+        memberBtn.setCursor(javafx.scene.Cursor.HAND);
+
+        Button managerBtn = new Button("Manager");
+        managerBtn.setLayoutX(124);
+        managerBtn.setLayoutY(321);
+        managerBtn.setPrefSize(120, 35);
+        managerBtn.setFont(Font.font("ArtifaktElement-Light", 12));
+        managerBtn.setCursor(javafx.scene.Cursor.HAND);
+
+        Label userLoginLabel = new Label("User Login");
+        userLoginLabel.setTextFill(Color.web("#0589ff"));
+        userLoginLabel.setFont(Font.font(16));
+        userLoginLabel.setLayoutX(144);
+        userLoginLabel.setLayoutY(208);
+        userLoginLabel.setPrefWidth(78);
+        userLoginLabel.setPrefHeight(22);
+
+        rightAnchorPane.getChildren().addAll(memberBtn, managerBtn, userLoginLabel, icon);
+        loginbox.setRight(rightAnchorPane);
+
+
+
+
+
 
         multiColumnListView = new MultiColumnListView<>();
         columns = createColumns();
@@ -50,8 +113,38 @@ public class HelloApplication extends Application {
         multiColumnListView.setPlaceholderTo(new Issue("To", "Done"));
         VBox.setVgrow(multiColumnListView, Priority.ALWAYS);
 
-        Button addButton = new Button("Add Issue");
-        addButton.setOnAction(e -> openAddIssueDialog());
+        // Create menu items
+        MenuItem addColumnMenuItem = new MenuItem("Add Column");
+        addColumnMenuItem.setOnAction(event -> addColumn());
+
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction(event -> {
+            System.exit(0);
+        });
+
+        MenuItem addIssueMenuItem = new MenuItem("Add Card");
+        addIssueMenuItem.setOnAction(event -> openAddIssueDialog());
+
+        CheckMenuItem showHeadersMenuItem = new CheckMenuItem("Show Headers");
+        showHeadersMenuItem.selectedProperty().bindBidirectional(multiColumnListView.showHeadersProperty());
+
+        CheckMenuItem disableEditingMenuItem = new CheckMenuItem("Disable Editing");
+        disableEditingMenuItem.selectedProperty().bindBidirectional(multiColumnListView.disableDragAndDropProperty());
+
+        Menu fileMenu = new Menu("File");
+        //fileMenu.getItems().addAll(new MenuItem("Exit"));
+        fileMenu.getItems().add(exit);
+
+        Menu editMenu = new Menu("Edit");
+        editMenu.getItems().addAll(addColumnMenuItem, addIssueMenuItem, showHeadersMenuItem, disableEditingMenuItem);
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(fileMenu, editMenu);
+
+
+        //Not gonna be using these buttons for now, instead added everything in the menu bar.
+//        Button addButton = new Button("Add Card");
+//        addButton.setOnAction(e -> openAddIssueDialog());
 
         Button addColumnButton = new Button("Add Column");
         addColumnButton.setOnAction(e -> addColumn());
@@ -74,20 +167,33 @@ public class HelloApplication extends Application {
             }
         });
 
-        HBox optionsBox = new HBox(10, separators, showHeaders, disableDragAndDrop, addColumnButton);
-        optionsBox.setAlignment(Pos.CENTER_RIGHT);
-        VBox vbox = new VBox(menuBar, multiColumnListView, addButton, optionsBox);
+       // HBox optionsBox = new HBox(10, separators, showHeaders, disableDragAndDrop, addColumnButton);
+        //optionsBox.setAlignment(Pos.CENTER_RIGHT);
+        VBox vbox = new VBox(menuBar, multiColumnListView );
         vbox.setAlignment(Pos.TOP_RIGHT);
         vbox.setPadding(new Insets(20));
 
-        Scene scene = new Scene(vbox);
-        stage.setTitle("KanZen");
-        stage.setScene(scene);
-        stage.setWidth(1000);
-        stage.setHeight(750);
-        stage.setFullScreen(true);
-        stage.setFullScreenExitHint("");
+        Image kanzen_logo = new Image("file:src/main/logo with text.png");
 
+
+        Scene scene = new Scene(vbox);
+        Scene scene2 = new Scene(loginbox);
+        memberBtn.setOnAction(event -> {
+
+            stage.setTitle("KanZen");
+            stage.setScene(scene);
+            stage.getIcons().add(kanzen_logo);
+            stage.setWidth(1000);
+            stage.setHeight(800);
+            stage.centerOnScreen();
+        });
+        stage.setTitle("KanZen");
+        stage.setScene(scene2);
+        stage.getIcons().add(kanzen_logo);
+        //stage.setWidth(1000);
+       // stage.setHeight(800);
+        //stage.setFullScreen(true);
+        //stage.setFullScreenExitHint("");
         stage.centerOnScreen();
         stage.show();
 
@@ -107,11 +213,11 @@ public class HelloApplication extends Application {
         MultiColumnListView.ListViewColumn<Issue> col4 = new MultiColumnListView.ListViewColumn<>();
 
         col1.setHeader(new Label("Backlog"));
-        col2.setHeader(new Label("To DO"));
+        col2.setHeader(new Label("To Do"));
         col3.setHeader(new Label("In Flight"));
         col4.setHeader(new Label("Done"));
 
-        col2.setItems(FXCollections.observableArrayList(new Issue("Jule", "todo"), new Issue("Franz", "in-progress"), new Issue("Paul", "done"), new Issue("Orange", "todo"), new Issue("Yellow", "in-progress"), new Issue("Red", "done"), new Issue("Mango", "todo")));
+        col2.setItems(FXCollections.observableArrayList(new Issue("Jule", "important"), new Issue("Franz", "in-progress"), new Issue("Paul", "done"), new Issue("Orange", "todo"), new Issue("Yellow", "in-progress"), new Issue("Red", "done"), new Issue("Mango", "todo")));
         col3.setItems(FXCollections.observableArrayList(new Issue("Armin", "todo")));
         col4.setItems(FXCollections.observableArrayList(new Issue("Zaid", "todo")));
 
@@ -188,7 +294,7 @@ public class HelloApplication extends Application {
             super.updateItem(item, empty);
             placeholder.set(false);
 
-            getStyleClass().removeAll("todo", "in-progress", "done");
+            getStyleClass().removeAll("todo", "in-progress", "done", "important");
 
             if (item != null && !empty) {
                 if (item == getMultiColumnListView().getPlaceholderFrom()) {
@@ -214,7 +320,7 @@ public class HelloApplication extends Application {
 
         TextField titleField = new TextField();
         ComboBox<String> statusComboBox = new ComboBox<>();
-        statusComboBox.getItems().addAll("todo", "in-progress", "done");
+        statusComboBox.getItems().addAll("todo", "in-progress", "done", "important");
 
         dialog.getDialogPane().setContent(new VBox(10, new Label("Title:"), titleField, new Label("Status:"), statusComboBox));
 

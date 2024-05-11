@@ -1,17 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="494.0" prefWidth="350.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" >
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-   <Circle fx:id="my_circle" fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE"  />
-
-    <Label fx:id="welcomeText" />
-
-</VBox>
+<BorderPane fx:id="loginbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="523.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <left>
+        <AnchorPane prefHeight="523.0" prefWidth="401.0" style="-fx-background-color: #0598ff;" BorderPane.alignment="CENTER">
+            <children>
+                <Label alignment="CENTER" layoutX="-1.0" layoutY="355.0" prefHeight="66.0" prefWidth="406.0" text="&quot;KanZen, The Choice of Professionals.&quot;" textFill="#fffbfb">
+                    <font>
+                        <Font name="3DS Fonticon" size="23.0" />
+                    </font>
+                </Label>
+            <ImageView fitHeight="251.0" fitWidth="243.0" layoutX="81.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../../../Downloads/logo%20with%20text.png" />
+               </image>
+            </ImageView>
+            </children>
+        </AnchorPane>
+    </left>
+    <right>
+        <AnchorPane prefHeight="523.0" prefWidth="381.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="member_btn" layoutX="124.0" layoutY="378.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="120.0" text="Member">
+                    <font>
+                        <Font name="ArtifaktElement-Light" size="12.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <Button fx:id="manager_btn" layoutX="124.0" layoutY="321.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="120.0" text="Manager ">
+                    <font>
+                        <Font name="ArtifaktElement-Light" size="12.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <Label layoutX="144.0" layoutY="208.0" prefHeight="22.0" prefWidth="78.0" text="User Login" textFill="#0589ff">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+            <FontAwesomeIcon fill="#0589ff" glyphName="GROUP" layoutX="119.0" layoutY="166.0" size="10em" />
+            </children>
+        </AnchorPane>
+    </right>
+</BorderPane>
