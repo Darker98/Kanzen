@@ -5,9 +5,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class AuthenticationCaller {
-    public static void call(ArrayList<String> parameters) {
+    public static void call(ArrayList<String> parameters, String status) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("./src/Auth/bin/Debug/net8.0-windows/Auth.exe", "login");
+            ProcessBuilder processBuilder = new ProcessBuilder("./GUI/KanBan_Board/src/main/java/com/example/authentication/bin/Debug/net8.0-windows", "login");
 
             // Redirect the standard output stream to capture the output
             processBuilder.redirectErrorStream(true);
@@ -40,17 +40,34 @@ public class AuthenticationCaller {
             process.waitFor();
 
             if (id != null && email != null) {
+                // Building the client
                 CosmosAsyncClient cosmosAsyncClient = new CosmosClientBuilder()
-                .endpoint(serviceEndpoint)
-                .key(key)
+                .endpoint("https://kanzen.documents.azure.com:443/")
+                .key("EiPkeEq8ZBCjla6NpEZtbqiOxCoLP6hxFM7hR6uaujsXoXLUtuatBW8E0v0ysdfvZgCxAy83oZVoACDbheFsFQ==")
                 .buildAsyncClient();
+
+                // Getting the record if exists
+                String filter = String.format("SELECT c.userStatus FROM c WHERE c.id = '%s'", id);
+                ItemResponse<User> response = cosmosAsyncClient.getItems().queryItems(Users, filter, null).blockFirst();
+
+                // If record does not exist, create
+                if (response == null) {
+                    User newUser = new User(id, email, status); 
+                    cosmosAsyncClient.getItems().createItem(User, newUser).block();
+                }
+                
+                String userStatus = response.getItem().getUserStatus();
             }
 
-            // Return id and email
+            // Return id, email and user status
             parameters.set(0, id);
             parameters.set(1, email);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        new AuthenticationCaller(new ArrayList<String>, "Member");
     }
 }
