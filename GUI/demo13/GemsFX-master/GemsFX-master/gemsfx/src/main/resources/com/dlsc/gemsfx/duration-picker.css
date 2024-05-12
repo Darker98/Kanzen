@@ -1,0 +1,154 @@
+.duration-picker {
+    -fx-padding: 0px;
+    -fx-pref-height: 2.1em;
+}
+
+.duration-picker > .box {
+    -fx-alignment: center;
+    -fx-spacing: 0px;
+}
+
+.duration-picker > .box > .spacer {
+    -fx-pref-width: 0px;
+}
+
+.duration-picker > .box > .edit-button {
+    -fx-pref-width: 27px;
+    -fx-padding: 5px 5px;
+    -fx-cursor: arrow;
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 1 1 1 0, 1, 2;
+    -fx-background-radius: 0 3 3 0, 0 2 2 0, 0 1 1 0;
+}
+
+.duration-picker:left > .box > .edit-button {
+    -fx-background-insets: 1 0 1 1, 1, 2;
+    -fx-background-radius: 3 0 0 3, 2 0 0 2, 1 0 0 1;
+}
+
+.duration-picker:button-only > .box > .edit-button {
+    -fx-background-insets: 1;
+    -fx-background-radius: 3, 2, 1;
+}
+
+.duration-picker:focused > .box > .edit-button {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+    -fx-background-insets: 0, 1, 2, 1, 2.6;
+    -fx-background-radius: 0 2 2 0, 0 1 1 0, 0 1 1 0, 0 1 1 0;
+    -fx-border-color: -fx-faint-focus-color;
+    -fx-border-width: 0 0 0 1;
+    -fx-border-insets: 0 0 0 -1;
+}
+
+.duration-picker:left:focused > .box > .edit-button {
+    -fx-background-radius: 2 0 0 2, 1 0 0 1, 1 0 0 1, 1 0 0 1;
+    -fx-border-width: 0 1 0 0;
+    -fx-border-insets: 0 -1 0 0;
+}
+
+.duration-picker:button-only:focused > .box > .edit-button {
+    -fx-background-insets: 1, 1, 2, 1;
+    -fx-background-radius: 3, 2, 1;
+    -fx-border-width: 1;
+    -fx-border-insets: -1;
+}
+
+.duration-picker > .box > .edit-button > .ikonli-font-icon {
+    -fx-icon-code: mdi-timer;
+    -fx-icon-size: 14px;
+    -fx-icon-color: -fx-mark-color;
+}
+
+.duration-picker > .box > .fields-box {
+    -fx-padding: 0px 5px;
+}
+
+.duration-picker > .box > .fields-box > .separator {
+    -fx-padding: 0px 1px;
+}
+
+.duration-picker > .box > .fields-box > .unit-field {
+    -fx-padding: 0px 2px;
+    -fx-alignment: center;
+}
+
+.duration-picker > .box > .fields-box > .unit-field.no-label {
+}
+
+.duration-picker > .box > .fields-box > .unit-field.short-label {
+}
+
+.duration-picker > .box > .fields-box > .unit-field.long-label {
+}
+
+.duration-picker > .box > .fields-box > .unit-field:focused {
+    -fx-background-radius: 2px;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: white;
+}
+
+.duration-picker .popup {
+    -fx-background-color: white;
+}
+
+/* -----------------------------------------------------------------------------------------------------
+ * DurationPickerPopupView
+ */
+.picker {
+    -fx-cell-size: 30px;
+    -fx-indicator-size: 30px;
+    -fx-padding: 1px;
+    -fx-border-width: 1;
+    -fx-border-color: -fx-box-border;
+    -fx-background-color: -fx-control-inner-background;
+}
+
+.picker .container {
+    -fx-spacing: 0px;
+    -fx-padding: 0px;
+}
+
+.picker:vertical .segment {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-pref-height: 150;
+    -fx-pref-width: 50;
+    -fx-padding: 0px;
+}
+
+.picker:vertical .segment > .segment-cell {
+    -fx-font-size: 1em;
+    -fx-font-family: null;
+    -fx-text-fill: black;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.picker:vertical .colon {
+    -fx-padding: 0px 2px;
+    -fx-font-family: null;
+    -fx-pref-width: 5;
+    -fx-font-size: 1em;
+    -fx-background-color: transparent;
+}
+
+.picker:vertical > .shadow {
+    -fx-background-color: transparent;
+}
+
+.picker:vertical > .indicator {
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-insets: 0;
+    -fx-background-color: -fx-accent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-opacity: .4;
+}
+
+.picker:vertical .segment-separator {
+    -fx-background-color: -fx-box-border;
+    -fx-pref-width: 1;
+    -fx-min-width: 1;
+    -fx-max-width: 1;
+    -fx-pref-height: 20;
+}
