@@ -85,7 +85,7 @@ public class Column {
                 return cards.get(i);
         }
 
-        throw new Exception("Invalid ID provided to getCard...")
+        throw new Exception("Invalid ID provided to getCard...");
     }
 
     // Add a swimlane

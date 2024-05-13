@@ -3,7 +3,7 @@ public class Manager extends User {
 
     Manager(String name, String email) {
         super(name, email);
-        team = new ArrayList<Member>;
+        team = new ArrayList<Member>();
     }
 
     // Getter for team
