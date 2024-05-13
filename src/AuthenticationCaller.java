@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class AuthenticationCaller {
     public static void call(ArrayList<String> parameters) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("./src/Auth/bin/Debug/net8.0-windows/Auth.exe", "login");
+            ProcessBuilder processBuilder = new ProcessBuilder("./src/Auth/bin/Debug/net8.0-windows/Auth.exe",
+                    "login");
 
             // Redirect the standard output stream to capture the output
             processBuilder.redirectErrorStream(true);
@@ -36,8 +37,12 @@ public class AuthenticationCaller {
                 id = null;
             }
 
+            System.out.println(lines);
+
             // You can optionally wait for the process to complete
             process.waitFor();
+
+            reader.close();
 
             // Return id and email
             parameters.set(0, id);
@@ -45,5 +50,9 @@ public class AuthenticationCaller {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        AuthenticationCaller.call(new ArrayList<String>());
     }
 }
