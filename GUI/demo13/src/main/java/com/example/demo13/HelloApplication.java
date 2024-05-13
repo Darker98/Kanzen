@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.example.authentication;
+
 public class HelloApplication extends Application {
     private MultiColumnListView<Issue> multiColumnListView;
     private List<MultiColumnListView.ListViewColumn<Issue>> columns;
@@ -179,13 +181,17 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(vbox);
         Scene scene2 = new Scene(loginbox);
         memberBtn.setOnAction(event -> {
+            ArrayList<String> parameters = new ArrayList<String>();
+            AuthenticationCaller.call(parameters, "Member");
 
-            stage.setTitle("KanZen");
-            stage.setScene(scene);
-            stage.getIcons().add(kanzen_logo);
-            stage.setWidth(1000);
-            stage.setHeight(800);
-            stage.centerOnScreen();
+            if (parameters.get(0) != null) {
+                stage.setTitle("KanZen");
+                stage.setScene(scene);
+                stage.getIcons().add(kanzen_logo);
+                stage.setWidth(1000);
+                stage.setHeight(800);
+                stage.centerOnScreen();
+            }
         });
         stage.setTitle("KanZen");
         stage.setScene(scene2);
