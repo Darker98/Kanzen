@@ -1,4 +1,4 @@
-package src.main.java.com.example.demo13;
+package com.example.demo13;
 
 import com.dlsc.gemsfx.MultiColumnListView;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
@@ -24,11 +24,12 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.example.authentication;
+import com.example.demo13.AuthenticationCaller;
 
 public class HelloApplication extends Application {
     private MultiColumnListView<Issue> multiColumnListView;
@@ -199,7 +200,7 @@ public class HelloApplication extends Application {
         Scene scene2 = new Scene(loginbox);
         memberBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
-            AuthenticationCaller.call(parameters, "Member");
+            AuthenticationCaller.call(parameters);
 
             if (parameters.get(0) != null) {
                 stage.setTitle("KanZen");
