@@ -11,6 +11,10 @@
     -fx-padding: 10px;
 }
 
+#manager_btn: hover{
+-fx-background-color: ##fffffff;
+}
+
 .issue-list-cell .content {
     -fx-background-color: #e0e0e0;
     -fx-shadow: dropshadow(gaussian, rgba(255, 0, 0, .26), 10, 0.12, -1, 2);

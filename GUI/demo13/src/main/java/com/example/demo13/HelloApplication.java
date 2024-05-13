@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -14,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -57,7 +59,7 @@ public class HelloApplication extends Application {
         titleLabel.setPrefHeight(66);
 
         ImageView logoImageView = new ImageView();
-        logoImageView.setImage(new Image("file:src/main/logo with text.png"));
+        logoImageView.setImage(new Image("file:GUI/demo13/src/main/logo with text.png"));
         logoImageView.setFitWidth(243);
         logoImageView.setFitHeight(251);
         logoImageView.setLayoutX(81);
@@ -90,9 +92,16 @@ public class HelloApplication extends Application {
         icon3.setGlyphName("KEY");
         icon3.setSize("2em");
         icon3.setFill(Color.web("#0598ff"));
-        icon3.setLayoutY(395);
+        icon3.setLayoutY(405);
         icon3.setLayoutX(85);
 
+        FontAwesomeIcon close_btn = new FontAwesomeIcon();
+        close_btn.setGlyphName("CLOSE");
+        close_btn.setFill(Color.web("#0598ff"));
+        close_btn.setSize("1.5em");
+        close_btn.setCursor(javafx.scene.Cursor.HAND);
+        close_btn.setLayoutX(360);
+        close_btn.setLayoutY(22);
 
 
         Button memberBtn = new Button("Member");
@@ -101,6 +110,8 @@ public class HelloApplication extends Application {
         memberBtn.setPrefSize(120, 35);
         memberBtn.setFont(Font.font("ArtifaktElement-Light", 12));
         memberBtn.setCursor(javafx.scene.Cursor.HAND);
+        memberBtn.setStyle("-fx-background-color:#0598ff");
+        memberBtn.setTextFill(Color.web("#ffffff"));
 
         Button managerBtn = new Button("Manager");
         managerBtn.setLayoutX(124);
@@ -108,6 +119,9 @@ public class HelloApplication extends Application {
         managerBtn.setPrefSize(120, 35);
         managerBtn.setFont(Font.font("ArtifaktElement-Light", 12));
         managerBtn.setCursor(javafx.scene.Cursor.HAND);
+        managerBtn.setStyle("-fx-background-color:#0598ff");
+        managerBtn.setTextFill(Color.web("#ffffff"));
+        managerBtn.setId("manager_btn");
 
         Label userLoginLabel = new Label("User Login");
         userLoginLabel.setTextFill(Color.web("#0589ff"));
@@ -117,7 +131,7 @@ public class HelloApplication extends Application {
         userLoginLabel.setPrefWidth(78);
         userLoginLabel.setPrefHeight(22);
 
-        rightAnchorPane.getChildren().addAll(memberBtn, managerBtn, userLoginLabel, icon, icon2, icon3);
+        rightAnchorPane.getChildren().addAll(memberBtn, managerBtn, userLoginLabel, icon, icon2, icon3, close_btn);
         loginbox.setRight(rightAnchorPane);
 
 
@@ -186,6 +200,16 @@ public class HelloApplication extends Application {
                 multiColumnListView.setSeparatorFactory(null);
             }
         });
+
+
+        //Login Window close action.
+        close_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.close();
+            }
+        });
+
 
        // HBox optionsBox = new HBox(10, separators, showHeaders, disableDragAndDrop, addColumnButton);
         //optionsBox.setAlignment(Pos.CENTER_RIGHT);
