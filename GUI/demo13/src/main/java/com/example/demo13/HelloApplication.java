@@ -1,6 +1,7 @@
 package com.example.demo13;
 
 import com.dlsc.gemsfx.MultiColumnListView;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -75,6 +76,22 @@ public class HelloApplication extends Application {
         icon.setLayoutX(119);
         icon.setLayoutY(166);
 
+        FontAwesomeIcon icon2 = new FontAwesomeIcon();
+        icon2.setGlyphName("BRIEFCASE");
+        icon2.setLayoutY(350);
+        icon2.setLayoutX(85);
+        icon2.setFill(Color.web("#0598ff"));
+        icon2.setSize("2em");
+
+        FontAwesomeIcon icon3 = new FontAwesomeIcon();
+        icon3.setGlyphName("KEY");
+        icon3.setSize("2em");
+        icon3.setFill(Color.web("#0598ff"));
+        icon3.setLayoutY(395);
+        icon3.setLayoutX(85);
+
+
+
         Button memberBtn = new Button("Member");
         memberBtn.setLayoutX(124);
         memberBtn.setLayoutY(378);
@@ -97,7 +114,7 @@ public class HelloApplication extends Application {
         userLoginLabel.setPrefWidth(78);
         userLoginLabel.setPrefHeight(22);
 
-        rightAnchorPane.getChildren().addAll(memberBtn, managerBtn, userLoginLabel, icon);
+        rightAnchorPane.getChildren().addAll(memberBtn, managerBtn, userLoginLabel, icon, icon2, icon3);
         loginbox.setRight(rightAnchorPane);
 
 
