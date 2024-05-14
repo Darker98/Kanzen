@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.css.StyleClass;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,23 +20,35 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.util.Callback;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import com.example.demo13.AuthenticationCaller;
 
 public class HelloApplication extends Application {
     private MultiColumnListView<Issue> multiColumnListView;
     private List<MultiColumnListView.ListViewColumn<Issue>> columns;
+
+    //List of colors for the columns that user creates manually
+    private final List<Color> headerColors = List.of(
+            Color.web("#26d1a6"),
+            Color.web("#9029ff"),
+            Color.web("#c98fcc"),
+            Color.web("#e8a054"),
+            Color.web("0598ff"),
+            Color.web("#f74343"),
+            Color.web("#4c22f5")
+    );
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -50,6 +63,7 @@ public class HelloApplication extends Application {
         leftAnchorPane.setStyle("-fx-background-color: #0598ff;");
 
         Label titleLabel = new Label("\"KanZen, The Choice of Professionals.\"");
+        titleLabel.setStyle("-fx-font-family: 'Times New Roman';");
         titleLabel.setTextFill(Color.web("#fffbfb"));
         titleLabel.setFont(Font.font("3DS Fonticon", 23));
         titleLabel.setAlignment(javafx.geometry.Pos.CENTER);
@@ -110,8 +124,9 @@ public class HelloApplication extends Application {
         memberBtn.setPrefSize(120, 35);
         memberBtn.setFont(Font.font("ArtifaktElement-Light", 12));
         memberBtn.setCursor(javafx.scene.Cursor.HAND);
-        memberBtn.setStyle("-fx-background-color:#0598ff");
+        memberBtn.setStyle("-fx-background-color:#0598ff; -fx-font-size: 14px");
         memberBtn.setTextFill(Color.web("#ffffff"));
+
 
         Button managerBtn = new Button("Manager");
         managerBtn.setLayoutX(124);
@@ -119,7 +134,7 @@ public class HelloApplication extends Application {
         managerBtn.setPrefSize(120, 35);
         managerBtn.setFont(Font.font("ArtifaktElement-Light", 12));
         managerBtn.setCursor(javafx.scene.Cursor.HAND);
-        managerBtn.setStyle("-fx-background-color:#0598ff");
+        managerBtn.setStyle("-fx-background-color:#0598ff; -fx-font-size: 14px");
         managerBtn.setTextFill(Color.web("#ffffff"));
         managerBtn.setId("manager_btn");
 
@@ -133,6 +148,9 @@ public class HelloApplication extends Application {
 
         rightAnchorPane.getChildren().addAll(memberBtn, managerBtn, userLoginLabel, icon, icon2, icon3, close_btn);
         loginbox.setRight(rightAnchorPane);
+
+
+
 
 
 
@@ -165,6 +183,8 @@ public class HelloApplication extends Application {
         CheckMenuItem disableEditingMenuItem = new CheckMenuItem("Disable Editing");
         disableEditingMenuItem.selectedProperty().bindBidirectional(multiColumnListView.disableDragAndDropProperty());
 
+
+
         Menu fileMenu = new Menu("File");
         //fileMenu.getItems().addAll(new MenuItem("Exit"));
         fileMenu.getItems().add(exit);
@@ -174,7 +194,10 @@ public class HelloApplication extends Application {
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(fileMenu, editMenu);
+        menuBar.setStyle("-fx-background-color:#abd2f5; -fx-border-color: black;");
 
+       // VBox vbox2 = new VBox(menuBar, multiColumnListView);
+       // vbox2.setPadding(new Insets(20,0,0,0));
 
         //Not gonna be using these buttons for now, instead added everything in the menu bar.
 //        Button addButton = new Button("Add Card");
@@ -192,7 +215,7 @@ public class HelloApplication extends Application {
         Callback<Integer, Node> separatorFactory = multiColumnListView.getSeparatorFactory();
 
         CheckBox separators = new CheckBox("Use Separators");
-        separators.setSelected(true);
+        separators.setSelected(false);
         separators.selectedProperty().addListener(it -> {
             if (separators.isSelected()) {
                 multiColumnListView.setSeparatorFactory(separatorFactory);
@@ -214,29 +237,33 @@ public class HelloApplication extends Application {
        // HBox optionsBox = new HBox(10, separators, showHeaders, disableDragAndDrop, addColumnButton);
         //optionsBox.setAlignment(Pos.CENTER_RIGHT);
         VBox vbox = new VBox(menuBar, multiColumnListView );
-        vbox.setAlignment(Pos.TOP_RIGHT);
-        vbox.setPadding(new Insets(20));
+       // vbox.setAlignment(Pos.TOP_RIGHT);
+        vbox.setPadding(new Insets(0));
+        multiColumnListView.setPadding(new Insets(20));
 
-        Image kanzen_logo = new Image("file:src/main/logo with text.png");
+        Image kanzen_logo = new Image("file:C:\\Users\\Home PC\\OneDrive\\Documents\\GitHub\\Kanzen\\GUI\\demo13\\src\\main\\logo with text.png");
 
 
         Scene scene = new Scene(vbox);
         Scene scene2 = new Scene(loginbox);
         memberBtn.setOnAction(event -> {
-            ArrayList<String> parameters = new ArrayList<String>();
-            AuthenticationCaller.call(parameters);
+          //  ArrayList<String> parameters = new ArrayList<String>();
+           // AuthenticationCaller.call(parameters);
 
-            if (parameters.get(0) != null) {
+           // if (parameters.get(0) != null) {
                 stage.setTitle("KanZen");
                 stage.setScene(scene);
                 stage.getIcons().add(kanzen_logo);
-                stage.setWidth(1000);
+                stage.setWidth(1400);
                 stage.setHeight(800);
+
                 stage.centerOnScreen();
-            }
+           // }
         });
         stage.setTitle("KanZen");
+        stage.getTitle();
         stage.setScene(scene2);
+        stage.getIcons().add(kanzen_logo);
         stage.getIcons().add(kanzen_logo);
         //stage.setWidth(1000);
        // stage.setHeight(800);
@@ -248,7 +275,7 @@ public class HelloApplication extends Application {
         // Add CSS file
         //scene.getStylesheets().add(Objects.requireNonNull(HelloApplication.class.getResource("multi-column-app.css")).toExternalForm());
 
-        String cssPath = "C:\\Users\\Home PC\\IdeaProjects\\demo13\\src\\main\\java\\com\\example\\demo13\\multi-column-app.css"; // Specify the correct path
+        String cssPath = "C:\\Users\\Home PC\\OneDrive\\Documents\\GitHub\\Kanzen\\GUI\\demo13\\src\\main\\java\\com\\example\\demo13\\multi-column-app.css"; // Specify the correct path
         scene.getStylesheets().add(new File(cssPath).toURI().toURL().toExternalForm());
 
     }
@@ -260,16 +287,23 @@ public class HelloApplication extends Application {
         MultiColumnListView.ListViewColumn<Issue> col3 = new MultiColumnListView.ListViewColumn<>();
         MultiColumnListView.ListViewColumn<Issue> col4 = new MultiColumnListView.ListViewColumn<>();
 
-        col1.setHeader(new Label("Backlog"));
-        col2.setHeader(new Label("To Do"));
-        col3.setHeader(new Label("In Flight"));
-        col4.setHeader(new Label("Done"));
+        col1.setHeader(createHeaderLabel("Backlog", "column-header-backlog"));
+        col2.setHeader(createHeaderLabel("To Do","column-header-todo"));
+        col3.setHeader(createHeaderLabel("In Flight","column-header-in-progress"));
+        col4.setHeader(createHeaderLabel("Done","column-header-done"));
 
         col2.setItems(FXCollections.observableArrayList(new Issue("Jule", "important"), new Issue("Franz", "in-progress"), new Issue("Paul", "done"), new Issue("Orange", "todo"), new Issue("Yellow", "in-progress"), new Issue("Red", "done"), new Issue("Mango", "todo")));
         col3.setItems(FXCollections.observableArrayList(new Issue("Armin", "todo")));
         col4.setItems(FXCollections.observableArrayList(new Issue("Zaid", "todo")));
 
         return List.of(col1, col2, col3, col4);
+    }
+
+    private Label createHeaderLabel(String text, String styleClass){
+        Label label = new Label(text);
+        label.getStyleClass().add(styleClass);
+        return label;
+
     }
 
     // Add a new column to the multiColumnListView
@@ -280,9 +314,24 @@ public class HelloApplication extends Application {
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(title -> {
             MultiColumnListView.ListViewColumn<Issue> newColumn = new MultiColumnListView.ListViewColumn<>();
-            newColumn.setHeader(new Label(title));
+            //Randomly select a color from the list
+            Color random_color = headerColors.get(new Random().nextInt(headerColors.size()));
+            //creating a label with a specified title and assigning it a random color
+            Label headerLabel = new Label(title);
+            headerLabel.setTextAlignment(TextAlignment.CENTER);
+            headerLabel.setStyle("-fx-background-color: " + toRgbString(random_color)+" ;"+ "fx-font-size: 50px; -fx-alignment: center; -fx-font-family: 'Times New Roman'; -fx-text-fill: white;");
+
+            newColumn.setHeader(headerLabel);
             multiColumnListView.getColumns().add(newColumn);
         });
+    }
+
+    // Helper method to convert Color to RGB string representation
+    private String toRgbString(Color color) {
+        int r = (int) (color.getRed() * 255);
+        int g = (int) (color.getGreen() * 255);
+        int b = (int) (color.getBlue() * 255);
+        return String.format("#%02x%02x%02x", r, g, b);
     }
 
     // Define the Issue class

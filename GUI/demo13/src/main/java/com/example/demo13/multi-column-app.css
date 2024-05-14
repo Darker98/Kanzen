@@ -9,6 +9,8 @@
     -fx-background-color: transparent;
     -fx-pref-height: 135px;
     -fx-padding: 10px;
+
+
 }
 
 #manager_btn: hover{
@@ -56,3 +58,52 @@
 
 .issue-list-cell:to {
 }
+
+
+.column-header-backlog {
+    -fx-background-color: #FFD700; /* Gold */
+    -fx-font-size: 50px;
+    -fx-alignment: center;
+    -fx-font-family: "Times New Roman";
+    -fx-text-fill:"#ffffff";
+    -fx-background-radius: 10px;
+}
+
+.column-header-todo {
+        -fx-background-color: #FF4500; /* Orange Red */
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+
+}
+
+.column-header-in-progress {
+    -fx-background-color: #0598ff; /* Dodger Blue */
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+}
+
+.column-header-done {
+      -fx-background-color: #32CD32; /* Lime Green */
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+
+}
+
+.column-header-important {
+    -fx-background-color: #f51119
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+}
+
