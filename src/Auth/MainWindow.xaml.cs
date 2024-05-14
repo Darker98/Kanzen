@@ -45,6 +45,7 @@ namespace Auth
             // No command-line arguments provided
             if (args.Length == 0)
             {
+                Console.WriteLine("Argument expected, none given.");
                 Environment.Exit(1);
             }
 
@@ -129,6 +130,7 @@ namespace Auth
             {
                 // A MsalUiRequiredException happened on AcquireTokenSilent. 
                 // This indicates you need to call AcquireTokenInteractive to acquire a token
+                System.Diagnostics.Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
 
                 try
                 {
@@ -140,12 +142,14 @@ namespace Auth
                 // Error acquiring token
                 catch (MsalException msalex)
                 {
+                    System.Diagnostics.Debug.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalex}");
                     Environment.Exit(1);
                 }
             }
             // Error acquiring token silently
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
                 Environment.Exit(1);
             }
 
