@@ -12,8 +12,8 @@ public class Database {
     public static void initialize() {
         // Create CosmosAsyncClient
         cosmosAsyncClient = new CosmosClientBuilder()
-                .endpoint("https://kanzen.documents.azure.com:443/")
-                .key("cDnKbbnmKoLGMEVjP0Cr5lLTTJCxEAYhjGzpSX7mbDLoNTJRe7Vo9s4eUcKnpzb8azKA0e1tiY80ACDbdnozag==")
+                .endpoint("your_endpoint")
+                .key("your_key")
                 .buildAsyncClient();
 
         // Get the Users container
