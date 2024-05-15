@@ -1,4 +1,4 @@
-package src.main.java.com.example.demo13;
+package com.example.demo13;
 
 import com.dlsc.gemsfx.MultiColumnListView;
 import javafx.application.Application;
@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ArrayList;
 
-import com.example.authentication;
+import com.example.demo13.AuthenticationCaller;
 
 public class HelloApplication extends Application {
     private MultiColumnListView<Issue> multiColumnListView;
@@ -183,7 +183,7 @@ public class HelloApplication extends Application {
         Scene scene2 = new Scene(loginbox);
         memberBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
-            AuthenticationCaller.call(parameters, "Member");
+            AuthenticationCaller.call(parameters, "login");
 
             if (parameters.get(0) != null) {
                 stage.setTitle("KanZen");
