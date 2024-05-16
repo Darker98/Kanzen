@@ -63,10 +63,11 @@
 -fx-font-size: 40px;
 -fx-alignment: center;
 -fx-font-family: "Futura";
--fx-background-color: radial-gradient(center 50% 50%, radius 80%, #6ec5ff 0%, #f4f4f4 70%);
-
+-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #7dcbf5 0%, #f4f4f4 70%);
 
 }
+
+
 
 .column-header-backlog {
     -fx-background-color: #FFD700; /* Gold */

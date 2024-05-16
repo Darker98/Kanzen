@@ -3,6 +3,7 @@ package com.example.demo13;
 import javafx.scene.control.Label;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Column {
     private static int id_tracker = 0;
@@ -108,6 +109,11 @@ public class Column {
         }
 
         throw new Exception("Invalid ID provided to getCard...");
+    }
+
+    public static List<Column> add(HelloApplication e) {
+        System.out.println("In add function...");
+        return e.createColumns();
     }
 
     // Add a swimlane
