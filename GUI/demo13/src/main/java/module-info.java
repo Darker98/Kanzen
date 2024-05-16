@@ -6,6 +6,6 @@ module com.example.demo13 {
     requires com.azure.cosmos;
     requires com.google.gson;
 
-    opens com.example.demo13 to javafx.fxml;
+    opens com.example.demo13 to javafx.fxml, com.fasterxml.jackson.databind;
     exports com.example.demo13;
 }

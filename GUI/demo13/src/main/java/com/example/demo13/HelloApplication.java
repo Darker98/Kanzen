@@ -183,7 +183,7 @@ public class HelloApplication extends Application {
         Scene scene2 = new Scene(loginbox);
         memberBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
-            AuthenticationCaller.call(parameters, "login");
+            AuthenticationCaller.call(parameters, "login", "Member");
 
             if (parameters.get(0) != null) {
                 stage.setTitle("KanZen");

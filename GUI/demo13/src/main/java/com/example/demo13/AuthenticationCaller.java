@@ -4,18 +4,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import com.azure.cosmos.CosmosAsyncClient;
 import com.azure.cosmos.CosmosAsyncContainer;
 import com.azure.cosmos.CosmosClientBuilder;
-import com.azure.cosmos.models.CosmosItemResponse;
-import com.azure.cosmos.models.CosmosQueryRequestOptions;
+import com.azure.cosmos.models.*;
 
-import com.azure.cosmos.models.PartitionKey;
 import com.example.demo13.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.example.demo13.Database;
@@ -44,7 +43,7 @@ public class AuthenticationCaller {
                 lines.add(line);
             }
 
-            System.out.println(lines);
+            //System.out.println(lines);
 
             String email, id, name;
             email = null;
@@ -77,66 +76,25 @@ public class AuthenticationCaller {
             // Access database if successful login
             if (id != null && email != null) {
                 try {
-                    // Create CosmosAsyncClient
-                    CosmosAsyncClient cosmosAsyncClient = Database.cosmosAsyncClient;
-
-                    // Create Users container
-                    CosmosAsyncContainer users = Database.users;
-
-                    // Create Boards container
-                    CosmosAsyncContainer boards = Database.boards;
-
-                    // Query if record exists
-                    String queryString = "SELECT * FROM c WHERE c.id = @id";
-                    CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions()
-                            .setPartitionKey(new PartitionKey(id));
-                    List<User> queryResults = users.queryItems(queryString, queryOptions, User.class)
-                            .byPage().blockFirst().getResults();
-
-                    // If record does not exist, create
-                    if (queryResults.isEmpty()) {
-                        Random random = new Random();
-                        int boardId = random.nextInt(999999999);
-                        User user = new User(id, name, email, status, boardId);
-                        users.createItem(user).block();
-
-                        Board board = new Board(boardId);
-                        board.columns.add(new Column("To Do", 100));
-                        board.columns.add(new Column("In Flight", 10));
-                        board.columns.add(new Column("Done", 100));
-                        board.users.add(user);
-
-                        boards.createItem(board).block();
-                    } else {
-                        // Record exists, handle accordingly
-                        User user = queryResults.get(0);
-
-                        // Query if record exists
-                        queryString = String.format("SELECT * FROM c WHERE c.id = {}", user.getBoardId());
-                        queryOptions = new CosmosQueryRequestOptions()
-                                .setPartitionKey(new PartitionKey(id));
-                        List<Board> queryResult = boards.queryItems(queryString, queryOptions, Board.class)
-                                .byPage().blockFirst().getResults();
-
-                        Board board = queryResult.get(0);
-                    }
+                    Database.getUser(id, name, email, status);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
-            // Return id and email
-            if (procedure.equals("login")) {
-                parameters.add(id);
-                parameters.add(name);
-                parameters.add(email);
-            }
+//            // Return id and email
+//            if (procedure.equals("login")) {
+//                parameters.add(id);
+//                parameters.add(name);
+//                parameters.add(email);
+//            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
+        Database.initialize();
         AuthenticationCaller.call(new ArrayList<String>(), "login", "Member");
     }
 }

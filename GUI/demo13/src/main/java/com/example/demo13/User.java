@@ -2,19 +2,27 @@ package com.example.demo13;
 
 public class User {
     public static User object;
-    private String id;
-    private String name;
-    private String email;
-    private String status;
-    private int boardId;
+    public String id;
+    public String name;
+    public String email;
+    public String status;
+    public String boardId;
 
-    User(String id, String name, String email, String status, int boardID) {
+    User() {
+        object = this;
+    }
+
+    User(String id, String name, String email, String status, String boardID) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.status = status;
         this.boardId = boardID;
         object = this;
+    }
+
+    User(String id, String name, String email, String status, String boardID, String... strings) {
+        this(id, name, email, status, boardID);
     }
 
     // Getter for id
@@ -43,5 +51,11 @@ public class User {
     }
 
     // Getter for boardId
-    public int getBoardId() { return boardId; }
+    public String getBoardId() { return boardId; }
+
+    // Getter for status
+    public String getStatus() { return status; }
+
+    // Setter for status
+    public void setStatus(String status) { this.status = status; }
 }
