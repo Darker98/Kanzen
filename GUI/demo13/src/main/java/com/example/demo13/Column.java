@@ -1,6 +1,9 @@
 package com.example.demo13;
 
+import javafx.scene.control.Label;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Column {
     public String id;
@@ -9,6 +12,8 @@ public class Column {
     //public int cardAmount;
     public ArrayList<Card> cards;
     //private ArrayList<Swimlane> swimlanes;
+    public Label header;
+
 
     public Column() { }
 
@@ -22,7 +27,8 @@ public class Column {
 
         // Initialize arrays
         cards = new ArrayList<Card>();
-        //swimlanes = new ArrayList<Swimlane>();
+        header = new Label(name);
+       // swimlanes = new ArrayList<Swimlane>();
     }
 
     // Setter for name
@@ -65,6 +71,9 @@ public class Column {
 //        cards.add(card);
 //        cardAmount++;
 //    }
+    public Label getHeader(){
+        return header;
+    }
 
 //    // Delete a card
 //    public void deleteCard(String id) throws Exception {

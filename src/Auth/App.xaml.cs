@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Auth
 {
@@ -9,6 +10,11 @@ namespace Auth
     /// </summary>
     public partial class App : Application
     {
+        public static void Main()
+        {
+            var app = new App();
+            app.Run();
+        }
     }
 
 }

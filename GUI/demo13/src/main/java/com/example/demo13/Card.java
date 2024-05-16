@@ -1,5 +1,6 @@
 package com.example.demo13;
 
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,11 +26,16 @@ public class Card {
         this.id = String.valueOf(id_tracker);
         this.title = title;
         this.description = description;
-//        this.status = status;
+        this.status = status;
+        this.label = label;
         this.blocked = blocked;
+        this.urgent = urgent;
         this.date = date;
         this.dateCreated = new Date(); // Automatically set to current creation date
         this.assigned = new ArrayList<User>();
+    }
+
+    public Card(int id, String title, String status) {
     }
 
 
