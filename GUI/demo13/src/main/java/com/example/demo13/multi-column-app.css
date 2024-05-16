@@ -59,6 +59,14 @@
 .issue-list-cell:to {
 }
 
+.column-header{
+-fx-font-size: 40px;
+-fx-alignment: center;
+-fx-font-family: "Futura";
+-fx-background-color: radial-gradient(center 50% 50%, radius 80%, #6ec5ff 0%, #f4f4f4 70%);
+
+
+}
 
 .column-header-backlog {
     -fx-background-color: #FFD700; /* Gold */
@@ -107,3 +115,19 @@
             -fx-background-radius: 10px;
 }
 
+.dialog-pane {
+    -fx-background-color: black;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+}
+
+.dialog-pane:header .header-panel {
+    -fx-background-color: black;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-font-style: italic;
+    -fx-font-size: 2em;
+}
