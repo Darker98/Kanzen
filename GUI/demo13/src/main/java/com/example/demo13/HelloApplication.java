@@ -31,6 +31,10 @@ import javafx.scene.layout.StackPane;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -431,7 +435,7 @@ public class HelloApplication extends Application {
         Scene scene2 = new Scene(loginbox);
         memberBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
-            //AuthenticationCaller.call(parameters);
+            AuthenticationCaller.call(parameters, "login", "Member");
 
             //if (parameters.get(0) != null) {
                 stage.setTitle("KanZen");
