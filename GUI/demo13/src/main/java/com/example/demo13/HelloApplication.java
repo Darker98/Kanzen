@@ -99,7 +99,7 @@ public class HelloApplication extends Application {
         titleLabel.setPrefHeight(66);
 
         ImageView logoImageView = new ImageView();
-        logoImageView.setImage(new Image("file:GUI/demo13/src/main/logo with text.png"));
+        logoImageView.setImage(new Image("file:src/main/logo with text.png"));
         logoImageView.setFitWidth(243);
         logoImageView.setFitHeight(251);
         logoImageView.setLayoutX(81);
@@ -424,7 +424,7 @@ public class HelloApplication extends Application {
         vbox.setPadding(new Insets(0));
         multiColumnListView.setPadding(new Insets(20));
 
-        Image kanzen_logo = new Image("file:C:\\Users\\Home PC\\OneDrive\\Documents\\GitHub\\Kanzen\\GUI\\demo13\\src\\main\\logo with text.png");
+        Image kanzen_logo = new Image("file:src/main/logo with text.png");
 
 
         Scene scene = new Scene(vbox);
@@ -461,7 +461,7 @@ public class HelloApplication extends Application {
         // Add CSS file
         //scene.getStylesheets().add(Objects.requireNonNull(HelloApplication.class.getResource("multi-column-app.css")).toExternalForm());
 
-        String cssPath = "C:\\Users\\Home PC\\OneDrive\\Documents\\GitHub\\Kanzen\\GUI\\demo13\\src\\main\\java\\com\\example\\demo13\\multi-column-app.css"; // Specify the correct path
+        String cssPath = "src/main/java/com/example/demo13/multi-column-app.css"; // Specify the correct path
         scene.getStylesheets().add(new File(cssPath).toURI().toURL().toExternalForm());
 
 
@@ -547,8 +547,7 @@ public class HelloApplication extends Application {
 
             listViewColumn.setHeader(headerLabel);
             multiColumnListView.getColumns().add(listViewColumn);
-
-
+            
             //newColumn.setHeader(headerLabel);
 
            // multiColumnListView.getColumns().add(newColumn);
