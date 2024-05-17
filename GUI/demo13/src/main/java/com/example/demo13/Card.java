@@ -1,6 +1,7 @@
 package com.example.demo13;
 
 import java.lang.reflect.Member;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -13,7 +14,7 @@ public class Card {
     public String label;
     public boolean blocked;
     public boolean urgent;
-    public Date date;
+    public LocalDate date;
     public Date dateCreated;
     public ArrayList<User> assigned;
 
@@ -22,7 +23,7 @@ public class Card {
 
     // Constructor
     public Card(String id, String title, String description, String status,
-                String label, boolean blocked, boolean urgent, Date date) {
+                String label, boolean blocked, boolean urgent, LocalDate date) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -35,7 +36,7 @@ public class Card {
         this.assigned = new ArrayList<User>();
     }
 
-    public Card(int id, String title, String status) {
+    public Card(String id, String title, String status) {
     }
 
 
@@ -96,11 +97,11 @@ public class Card {
         return urgent;
     }
 
-    public void setDate(Date date){
+    public void setDate(LocalDate date){
         this.date = date;
     }
 
-    public Date getDate(){
+    public LocalDate getDate(){
         return date;
     }
     public void setDateCreated(Date dateCreated){
@@ -135,7 +136,7 @@ public class Card {
         label = new String(card.label);
         blocked = card.blocked;
         urgent = card.urgent;
-        date = new Date(String.valueOf(card.date));
+        date = card.date;
         assigned = new ArrayList<User>(card.assigned); // TODO: Fix
     }
 }

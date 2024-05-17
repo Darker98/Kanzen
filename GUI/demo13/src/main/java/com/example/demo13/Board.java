@@ -18,6 +18,8 @@ public class Board {
         columns = new ArrayList<Column>();
         userEmails = new ArrayList<String>();
 
+        object = this;
+
         System.out.println(id);
     }
 
@@ -26,6 +28,8 @@ public class Board {
         this.id = id;
         this.columns = columns;
         this.userEmails = users;
+
+        object = this;
     }
 
     // Getter for boardId
