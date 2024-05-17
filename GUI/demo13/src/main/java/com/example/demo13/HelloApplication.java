@@ -442,7 +442,12 @@ public class HelloApplication extends Application {
                 AuthenticationCaller.call(parameters, "login", "Member");
                 System.out.println("Auth finished");
             } catch (IllegalAccessException e) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No board found! Contact your manager to add you to a board.");
+                System.out.println("No board...");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error fetching data");
+                alert.setHeaderText("No board found!");
+                alert.setContentText("Contact your manager to add you to a board.");
+                alert.showAndWait();
                 return;
             }
 
@@ -472,7 +477,6 @@ public class HelloApplication extends Application {
             try {
                 AuthenticationCaller.call(parameters, "login", "Manager");
             } catch (IllegalAccessException e) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No board found! Contact your manager to add you to a board.");
                 return;
             }
 
@@ -506,7 +510,11 @@ public class HelloApplication extends Application {
                 stage.setHeight(523);
                 stage.centerOnScreen();
             } catch (IllegalAccessException exception) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to sign out!");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error signing out");
+                alert.setHeaderText("There was an error in logging you out.");
+                alert.setContentText("Please try again later.");
+                alert.showAndWait();
             }
         });
 
