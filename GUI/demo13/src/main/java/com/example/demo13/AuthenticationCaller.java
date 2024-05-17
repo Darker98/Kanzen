@@ -4,13 +4,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.*;
+
+import com.azure.cosmos.CosmosAsyncClient;
+import com.azure.cosmos.CosmosAsyncContainer;
+import com.azure.cosmos.CosmosClientBuilder;
+import com.azure.cosmos.models.*;
+
+import com.example.demo13.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.example.demo13.Database;
+
 import java.util.ArrayList;
 
 public class AuthenticationCaller {
-    public static void call(ArrayList<String> parameters) {
+    public static void call(ArrayList<String> parameters, String procedure, String status) throws IllegalAccessException {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("C:\\Users\\Home PC\\OneDrive\\Documents\\GitHub\\Kanzen\\GUI\\demo13\\src\\main\\java\\com\\example\\demo13\\bin\\Debug\\net8.0-windows\\Auth.exe",
-                    "login");
+            ProcessBuilder processBuilder = new ProcessBuilder("src/main/java/com/example/demo13/bin/Debug/net8.0-windows/Auth.exe",
+                    procedure);
 
             // Redirect the standard output stream to capture the output
             processBuilder.redirectErrorStream(true);
@@ -29,32 +44,66 @@ public class AuthenticationCaller {
                 lines.add(line);
             }
 
-            // Read email and ID
-            String email, id;
-            if (lines.get(1).equalsIgnoreCase("Success")) {
-                email = lines.get(3);
-                id = lines.get(2);
-            } else {
-                email = null;
-                id = null;
-            }
+            //System.out.println(lines);
 
-            System.out.println(lines);
+            String email, id, name;
+            email = null;
+            id = null;
+            name = null;
+
+            // Read email and ID
+            if (procedure.equals("login")) {
+                try {
+                    if (lines.get(1).equalsIgnoreCase("Success")) {
+                        String json = lines.get(0);
+
+                        // Parse JSON
+                        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+
+                        // Get the givenName value
+                        name = jsonObject.get("displayName").getAsString();
+                        email = jsonObject.get("mail").getAsString();
+                        id = jsonObject.get("id").getAsString();
+                    }
+                }
+                catch (Exception e) {
+
+                }
+            }
 
             // You can optionally wait for the process to complete
             process.waitFor();
 
-            reader.close();
+            // Access database if successful login
+            if (id != null && email != null) {
+                try {
+                    Database.getUser(id, name, email, status);
+                }
+                catch (IllegalAccessException e) {
+                    throw new IllegalAccessException();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
-            // Return id and email
-            parameters.set(0, id);
-            parameters.set(1, email);
-        } catch (IOException | InterruptedException e) {
+//            // Return id and email
+//            if (procedure.equals("login")) {
+//                parameters.add(id);
+//                parameters.add(name);
+//                parameters.add(email);
+//            }
+        }
+        catch (IllegalAccessException e) {
+            throw new IllegalAccessException();
+        }
+        catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        AuthenticationCaller.call(new ArrayList<String>());
+        Database.initialize();
+        //AuthenticationCaller.call(new ArrayList<String>(), "login", "Member");
     }
 }

@@ -64,6 +64,7 @@ namespace Auth
             // Invalid command-line argument
             else
             {
+                Console.WriteLine("Invalid command!");
                 Environment.Exit(1);
             }
 
