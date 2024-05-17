@@ -21,9 +21,9 @@ public class Card {
     public Card() { }
 
     // Constructor
-    public Card(String title, String description, String status,
+    public Card(String id, String title, String description, String status,
                 String label, boolean blocked, boolean urgent, Date date) {
-        this.id = String.valueOf(id_tracker);
+        this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
