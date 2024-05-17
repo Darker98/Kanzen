@@ -65,7 +65,7 @@ public class HelloApplication extends Application {
 //        List<Column> columnObjects = createColumns();
 //
 //     //   List<Column> columnObjects = Column.add(this);
-//        columns = new ArrayList<>();
+          columns = new ArrayList<>();
 //        for (Column column : columnObjects) {
             MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
 //            Label headerLabel = createHeaderLabel(column.getName(), "column-header");
@@ -76,8 +76,8 @@ public class HelloApplication extends Application {
         multiColumnListView = new MultiColumnListView<>();
         multiColumnListView.setCellFactory(listView -> new IssueListCell(multiColumnListView));
 //        multiColumnListView.getColumns().setAll(columns);
-        multiColumnListView.setPlaceholderFrom(new Issue("From", "Done", null));
-        multiColumnListView.setPlaceholderTo(new Issue("To", "Done", null));
+        multiColumnListView.setPlaceholderFrom(new Issue(Database.generateId(),"From", "Done", null));
+        multiColumnListView.setPlaceholderTo(new Issue(Database.generateId(),"To", "Done", null));
 
 
         stage.initStyle(StageStyle.DECORATED.UNDECORATED);
@@ -447,9 +447,11 @@ public class HelloApplication extends Application {
 
             System.out.println(parameters.get(0));
             if (parameters.get(0) != null) {
-                for (int i = 0; i < Board.object.columns.size(); i++) {
-                    addColumn(Board.object.columns.get(i));
-                }
+//                for (int i = 0; i < Board.object.columns.size(); i++) {
+//                    addColumn(Board.object.columns.get(i));
+//                }
+                initialColumns();
+                initialCards();
 
                 stage.setTitle("KanZen");
                 stage.setScene(scene);
@@ -475,9 +477,11 @@ public class HelloApplication extends Application {
 
             if (parameters.size() != 0) {
                 if (parameters.get(0) != null) {
-                    for (int i = 0; i < Board.object.columns.size(); i++) {
-                        addColumn(Board.object.columns.get(i));
-                    }
+//                    for (int i = 0; i < Board.object.columns.size(); i++) {
+//                        addColumn(Board.object.columns.get(i));
+//                    }
+                    initialColumns();
+                    initialCards();
 
                     stage.setTitle("KanZen");
                     stage.setScene(scene);
@@ -572,6 +576,7 @@ public class HelloApplication extends Application {
         columnUI.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
                 "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6ec5ff 10%, #f4f4f4 70%);");
 
+        columns.add(listViewColumn);
         listViewColumn.setHeader(headerLabel);
         multiColumnListView.getColumns().add(listViewColumn);
     }
@@ -606,6 +611,7 @@ public class HelloApplication extends Application {
             //headerLabel.setStyle("-fx-background-color: " + toRgbString(random_color)+" ;"+ "fx-font-size: 20px; -fx-alignment: center; -fx-font-family: 'Times New Roman'; -fx-text-fill: white;");
             newColumn.setName(title);
             MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
+            Board.object.columns.add(newColumn);
             ColumnUI columnUI = new ColumnUI(newColumn);
             columnUI.setHeader(headerLabel);
             columnUI.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
@@ -613,6 +619,7 @@ public class HelloApplication extends Application {
 
             listViewColumn.setHeader(headerLabel);
             multiColumnListView.getColumns().add(listViewColumn);
+            columns.add(listViewColumn);
 
             Database.updateBoard();
 
@@ -643,8 +650,8 @@ public class HelloApplication extends Application {
         private LocalDate dueDate;
 
 
-        public Issue (String title, String status, LocalDate dueDate)  {
-            super(12, title, status);
+        public Issue (String id, String title, String status, LocalDate dueDate)  {
+            this.id = id;
             this.title = title;
             this.status = status;
             this.createdDate = LocalDateTime.now();
@@ -854,7 +861,7 @@ public class HelloApplication extends Application {
                 String status = statusComboBox.getValue();
                 LocalDate dueDate = datePicker.getValue();
 
-                return new Issue(title, status, dueDate);
+                return new Issue(Database.generateId(),title, status, dueDate);
             }
             return null;
         });
@@ -862,11 +869,22 @@ public class HelloApplication extends Application {
         Optional<Issue> result = dialog.showAndWait();
         result.ifPresent(issue -> {
             // Add the new issue to the first column
-
+            Board.object.columns.get(0).cards.add(issue);
             columns.get(0).getItems().add(issue);
+            Database.updateBoard();
         });
+    }
 
-        Database.updateBoard();
+    public void initialCards() {
+        Issue issue;
+        Card card;
+        for (int i = 0; i < Board.object.columns.size(); i++) {
+            for (int j = 0; j < Board.object.columns.get(i).cards.size(); j++) {
+                card = Board.object.columns.get(i).cards.get(j);
+                issue = new Issue(card.id, card.title, card.status, card.date);
+                columns.get(i).getItems().add(issue);
+            }
+        }
     }
 
     public void initialColumns() {

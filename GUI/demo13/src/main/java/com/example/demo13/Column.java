@@ -15,7 +15,9 @@ public class Column {
 //    public String header;
 
 
-    public Column() { }
+    public Column() {
+        cards = new ArrayList<Card>();
+    }
 
     // Constructor
     Column(String id, String name, int wip) {
