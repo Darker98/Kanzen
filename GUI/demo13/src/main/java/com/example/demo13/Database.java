@@ -106,8 +106,8 @@ public class Database {
         // If not exist
         if (queryResult.isEmpty()) {
             // Make a new board if it is a manager login
-            System.out.println("Creating board");
             if (User.object.getStatus().equals("Manager")) {
+                System.out.println("Creating board");
                 board = new Board(boardId);
                 board.columns.add(new Column(Database.generateId(), "Backlog", 100));
                 board.columns.add(new Column(Database.generateId(), "To Do", 100));
