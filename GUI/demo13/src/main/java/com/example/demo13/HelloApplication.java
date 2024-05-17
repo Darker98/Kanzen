@@ -31,6 +31,7 @@ import javafx.scene.layout.StackPane;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -497,6 +498,17 @@ public class HelloApplication extends Application {
             }
         });
 
+        signOutButton.setOnAction(e -> {
+            try {
+                AuthenticationCaller.call(new ArrayList<String>(), "logout", User.object.status);
+                stage.setScene(scene2);
+                stage.setWidth(769);
+                stage.setHeight(523);
+                stage.centerOnScreen();
+            } catch (IllegalAccessException exception) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to sign out!");
+            }
+        });
 
         stage.setTitle("KanZen");
         stage.getTitle();
@@ -743,14 +755,26 @@ public class HelloApplication extends Application {
 
             delete_btn.setOnAction(event -> {
                 Issue issue = getItem();
-                if(issue != null){
+                if (issue != null) {
                     getMultiColumnListView().getColumns().forEach(column ->{
-                        if(column.getItems().contains(issue)){
+                        if (column.getItems().contains(issue)) {
                             column.getItems().remove(issue);
-
                         }
-
                     });
+                    // Delete card from backend
+                    int i, j;
+                    ArrayList<Card> cardDel = new ArrayList<Card>();
+                    for (i = 0; i < Board.object.columns.size(); i++) {
+                        for (j = 0; j < Board.object.columns.get(i).cards.size(); j++) {
+                            if (issue.getID() == Board.object.columns.get(i).cards.get(j).getID()) {
+                                cardDel.add(Board.object.columns.get(i).cards.get(j));
+                                break;
+                            }
+                        }
+                        if (!cardDel.isEmpty()) { break; }
+                    }
+                    Board.object.columns.get(i).cards.remove(cardDel.getFirst());
+                    Database.updateBoard();
                 }
             });
 
@@ -763,7 +787,7 @@ public class HelloApplication extends Application {
             update_btn.setGraphic(update);
             update_label.setGraphic(update_btn);
             update_btn.setStyle("-fx-background-color: #27e868");
-            update_btn.setOnAction(event ->{
+            update_btn.setOnAction(event -> {
                 TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
                 dialog.setTitle("Update Card");
                 dialog.setHeaderText("Enter New Description");
