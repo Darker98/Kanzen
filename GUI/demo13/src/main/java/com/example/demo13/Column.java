@@ -12,7 +12,7 @@ public class Column {
     //public int cardAmount;
     public ArrayList<Card> cards;
     //private ArrayList<Swimlane> swimlanes;
-    public Label header;
+//    public String header;
 
 
     public Column() { }
@@ -27,7 +27,7 @@ public class Column {
 
         // Initialize arrays
         cards = new ArrayList<Card>();
-        header = new Label(name);
+//        header = new Label(name);
        // swimlanes = new ArrayList<Swimlane>();
     }
 
@@ -71,13 +71,13 @@ public class Column {
 //        cards.add(card);
 //        cardAmount++;
 //    }
-    public Label getHeader(){
-        return header;
-    }
-
-    public void setHeader(Label header) {
-        this.header = header;
-    }
+//    public Label getHeader(){
+//        return header;
+//    }
+//
+//    public void setHeader(Label header) {
+//        this.header = header;
+//    }
 
 //    // Delete a card
 //    public void deleteCard(String id) throws Exception {

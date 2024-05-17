@@ -67,7 +67,7 @@ public class HelloApplication extends Application {
 //     //   List<Column> columnObjects = Column.add(this);
 //        columns = new ArrayList<>();
 //        for (Column column : columnObjects) {
-//            MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
+            MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
 //            Label headerLabel = createHeaderLabel(column.getName(), "column-header");
 //            listViewColumn.setHeader(headerLabel);
 //            columns.add(listViewColumn);
@@ -445,7 +445,12 @@ public class HelloApplication extends Application {
                 return;
             }
 
+            System.out.println(parameters.get(0));
             if (parameters.get(0) != null) {
+                for (int i = 0; i < Board.object.columns.size(); i++) {
+                    addColumn(Board.object.columns.get(i));
+                }
+
                 stage.setTitle("KanZen");
                 stage.setScene(scene);
                 stage.getIcons().add(kanzen_logo);
@@ -459,7 +464,7 @@ public class HelloApplication extends Application {
             }
         });
 
-        managerBtn.setOnAction(actionEvent -> {
+        managerBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
             try {
                 AuthenticationCaller.call(parameters, "login", "Manager");
@@ -468,17 +473,23 @@ public class HelloApplication extends Application {
                 return;
             }
 
-            if (parameters.get(0) != null) {
-                stage.setTitle("KanZen");
-                stage.setScene(scene);
-                stage.getIcons().add(kanzen_logo);
-                //stage.setFullScreen(true);
-                stage.setWidth(1200);
-                //  multiColumnListView.setSeparatorFactory(null);
+            if (parameters.size() != 0) {
+                if (parameters.get(0) != null) {
+                    for (int i = 0; i < Board.object.columns.size(); i++) {
+                        addColumn(Board.object.columns.get(i));
+                    }
 
-                stage.setHeight(800);
+                    stage.setTitle("KanZen");
+                    stage.setScene(scene);
+                    stage.getIcons().add(kanzen_logo);
+                    //stage.setFullScreen(true);
+                    stage.setWidth(1200);
+                    //  multiColumnListView.setSeparatorFactory(null);
 
-                stage.centerOnScreen();
+                    stage.setHeight(800);
+
+                    stage.centerOnScreen();
+                }
             }
         });
 
@@ -556,8 +567,9 @@ public class HelloApplication extends Application {
 
         Label headerLabel = new Label(column.getName());
         MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
-        column.setHeader(headerLabel);
-        column.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
+        ColumnUI columnUI = new ColumnUI(column);
+        columnUI.setHeader(headerLabel);
+        columnUI.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
                 "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6ec5ff 10%, #f4f4f4 70%);");
 
         listViewColumn.setHeader(headerLabel);
@@ -594,13 +606,16 @@ public class HelloApplication extends Application {
             //headerLabel.setStyle("-fx-background-color: " + toRgbString(random_color)+" ;"+ "fx-font-size: 20px; -fx-alignment: center; -fx-font-family: 'Times New Roman'; -fx-text-fill: white;");
             newColumn.setName(title);
             MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
-            newColumn.setHeader(headerLabel);
-            newColumn.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
+            ColumnUI columnUI = new ColumnUI(newColumn);
+            columnUI.setHeader(headerLabel);
+            columnUI.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
                     "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6ec5ff 10%, #f4f4f4 70%);");
 
             listViewColumn.setHeader(headerLabel);
             multiColumnListView.getColumns().add(listViewColumn);
-            
+
+            Database.updateBoard();
+
             //newColumn.setHeader(headerLabel);
 
            // multiColumnListView.getColumns().add(newColumn);
@@ -850,6 +865,8 @@ public class HelloApplication extends Application {
 
             columns.get(0).getItems().add(issue);
         });
+
+        Database.updateBoard();
     }
 
     public void initialColumns() {
@@ -861,6 +878,7 @@ public class HelloApplication extends Application {
 
 
     public static void main(String[] args) {
+        Database.initialize();
         launch();
     }
 

@@ -76,6 +76,8 @@ public class Database {
         CosmosQueryRequestOptions queryOptions;
         List<Board> queryResult;
 
+        System.out.println("Querying board");
+
         // Query the record
         // Query by id if Manager
         // Query by email if Member
@@ -104,6 +106,7 @@ public class Database {
         // If not exist
         if (queryResult.isEmpty()) {
             // Make a new board if it is a manager login
+            System.out.println("Creating board");
             if (User.object.getStatus().equals("Manager")) {
                 board = new Board(boardId);
                 board.columns.add(new Column(Database.generateId(), "Backlog", 100));
@@ -113,10 +116,12 @@ public class Database {
                 //board.columns.get(0).cards.add(new Card("Test", "testing...", "To Do", "To Do", false, false, new Date()));
                 board.userEmails.add(User.object.getEmail());
 
+                System.out.println("Converting to JSON");
                 // Convert the Board object to JSON using Jackson
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode boardJsonNode = objectMapper.valueToTree(board);
 
+                System.out.println("Uploading board");
                 // Use the JsonNode directly to create the item in Cosmos DB
                 boards.createItem(boardJsonNode).block();
             } else {
@@ -126,11 +131,15 @@ public class Database {
             // If exists, read from database
             board = queryResult.get(0);
 
+            System.out.println(board.userEmails);
+
             // Update user record
             User.object.boardId = board.getBoardId();
             CosmosItemRequestOptions requestOptions = new CosmosItemRequestOptions();
             CosmosItemResponse<User> response = users.replaceItem(User.object, User.object.getID(), new PartitionKey(User.object.getID()), requestOptions).block();
         }
+
+        return;
     }
 
     public static synchronized void updateBoard() {
