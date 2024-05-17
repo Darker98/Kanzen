@@ -22,7 +22,7 @@ import com.example.demo13.Database;
 import java.util.ArrayList;
 
 public class AuthenticationCaller {
-    public static void call(ArrayList<String> parameters, String procedure, String status) {
+    public static void call(ArrayList<String> parameters, String procedure, String status) throws IllegalAccessException {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("src/main/java/com/example/demo13/bin/Debug/net8.0-windows/Auth.exe",
                     procedure);
@@ -78,7 +78,11 @@ public class AuthenticationCaller {
             if (id != null && email != null) {
                 try {
                     Database.getUser(id, name, email, status);
-                } catch (Exception e) {
+                }
+                catch (IllegalAccessException e) {
+                    throw new IllegalAccessException();
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -89,13 +93,17 @@ public class AuthenticationCaller {
 //                parameters.add(name);
 //                parameters.add(email);
 //            }
-        } catch (IOException | InterruptedException e) {
+        }
+        catch (IllegalAccessException e) {
+            throw new IllegalAccessException();
+        }
+        catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
         Database.initialize();
-        AuthenticationCaller.call(new ArrayList<String>(), "login", "Member");
+        //AuthenticationCaller.call(new ArrayList<String>(), "login", "Member");
     }
 }

@@ -3,13 +3,11 @@ package com.example.demo13;
 import com.azure.cosmos.CosmosAsyncClient;
 import com.azure.cosmos.CosmosAsyncContainer;
 import com.azure.cosmos.CosmosClientBuilder;
-import com.azure.cosmos.models.CosmosQueryRequestOptions;
-import com.azure.cosmos.models.PartitionKey;
-import com.azure.cosmos.models.SqlParameter;
-import com.azure.cosmos.models.SqlQuerySpec;
+import com.azure.cosmos.models.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -41,7 +39,7 @@ public class Database {
         return String.valueOf(randomInt);
     }
 
-    public static void getUser(String id, String name, String email, String status) {
+    public static void getUser(String id, String name, String email, String status) throws IllegalAccessException {
         // Query record
         String queryString = "SELECT * FROM c WHERE c.id = @id";
         List<SqlParameter> sqlParameters = Collections.singletonList(new SqlParameter("@id", id));
@@ -68,41 +66,76 @@ public class Database {
         System.out.println(User.object.id);
 
         // Get board associated with user
-        getBoard(user.getBoardId());
+        getBoard(user.getBoardId(), user.getEmail());
     }
 
-    public static void getBoard(String boardId) {
+    public static void getBoard(String boardId, String email) throws IllegalAccessException {
+        String queryString;
+        List<SqlParameter> sqlParameters;
+        SqlQuerySpec sqlQuerySpec;
+        CosmosQueryRequestOptions queryOptions;
+        List<Board> queryResult;
+
         // Query the record
-        String queryString = "SELECT * FROM c WHERE c.id = @id";
-        List<SqlParameter> sqlParameters = Collections.singletonList(new SqlParameter("@id", boardId));
-        SqlQuerySpec sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
-        CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions()
-                .setPartitionKey(new PartitionKey(boardId));
-        List<Board> queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
-                .byPage().blockFirst().getResults();
+        // Query by id if Manager
+        // Query by email if Member
+        if (User.object.getStatus().equals("Manager")) {
+            queryString = "SELECT * FROM c WHERE c.id = @id";
+            sqlParameters = Collections.singletonList(new SqlParameter("@id", boardId));
+            sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
+            queryOptions = new CosmosQueryRequestOptions()
+                    .setPartitionKey(new PartitionKey(boardId));
+            queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
+                    .byPage().blockFirst().getResults();
+        } else {
+            queryString = "SELECT * FROM c WHERE ARRAY_CONTAINS(c.users, @userEmail)";
+            sqlParameters = Collections.singletonList(new SqlParameter("@userEmail", email));
+            sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
+
+            // Since we do not have a specific partition key to filter on, the partition key is omitted
+                        queryOptions = new CosmosQueryRequestOptions();
+
+            // Execute the query
+                        queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
+                                .byPage().blockFirst().getResults();
+        }
 
         Board board;
-        // If not exist, make new board and write to database
+        // If not exist
         if (queryResult.isEmpty()) {
-            board = new Board(boardId);
-            board.columns.add(new Column(Database.generateId(), "Backlog", 100));
-            board.columns.add(new Column(Database.generateId(), "To Do", 100));
-            board.columns.add(new Column(Database.generateId(), "In Flight", 10));
-            board.columns.add(new Column(Database.generateId(), "Done", 100));
-            //board.columns.get(0).cards.add(new Card("Test", "testing...", "To Do", "To Do", false, false, new Date()));
-            board.userEmails.add(User.object.getEmail());
+            // Make a new board if it is a manager login
+            if (User.object.getStatus().equals("Manager")) {
+                board = new Board(boardId);
+                board.columns.add(new Column(Database.generateId(), "Backlog", 100));
+                board.columns.add(new Column(Database.generateId(), "To Do", 100));
+                board.columns.add(new Column(Database.generateId(), "In Flight", 10));
+                board.columns.add(new Column(Database.generateId(), "Done", 100));
+                //board.columns.get(0).cards.add(new Card("Test", "testing...", "To Do", "To Do", false, false, new Date()));
+                board.userEmails.add(User.object.getEmail());
 
-            // Convert the Board object to JSON using Jackson
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode boardJsonNode = objectMapper.valueToTree(board);
+                // Convert the Board object to JSON using Jackson
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode boardJsonNode = objectMapper.valueToTree(board);
 
-            // Use the JsonNode directly to create the item in Cosmos DB
-            boards.createItem(boardJsonNode).block();
+                // Use the JsonNode directly to create the item in Cosmos DB
+                boards.createItem(boardJsonNode).block();
+            } else {
+                throw new IllegalAccessException("No board exists! Contact your manager to add you to one.");
+            }
         } else {
             // If exists, read from database
             board = queryResult.get(0);
-        }
 
-        System.out.println(Board.object.id);
+            // Update user record
+            User.object.boardId = board.getBoardId();
+            CosmosItemRequestOptions requestOptions = new CosmosItemRequestOptions();
+            CosmosItemResponse<User> response = users.replaceItem(User.object, User.object.getID(), new PartitionKey(User.object.getID()), requestOptions).block();
+        }
+    }
+
+    public static synchronized void updateBoard() {
+        Board board = Board.object;
+        CosmosItemRequestOptions requestOptions = new CosmosItemRequestOptions();
+        CosmosItemResponse<Board> response = boards.replaceItem(board, board.getBoardId(), new PartitionKey(board.getBoardId()), requestOptions).block();
     }
 }
