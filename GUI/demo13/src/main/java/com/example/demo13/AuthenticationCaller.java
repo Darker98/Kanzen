@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class AuthenticationCaller {
     public static void call(ArrayList<String> parameters, String procedure, String status) throws IllegalAccessException {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("src/main/java/com/example/demo13/bin/Debug/net8.0-windows/Auth.exe",
+            ProcessBuilder processBuilder = new ProcessBuilder("src/main/java/com/example/demo13/bin/Auth.exe",
                     procedure);
 
             // Redirect the standard output stream to capture the output
@@ -44,7 +44,7 @@ public class AuthenticationCaller {
                 lines.add(line);
             }
 
-            //System.out.println(lines);
+            System.out.println(lines);
 
             String email, id, name;
             email = null;
@@ -104,6 +104,10 @@ public class AuthenticationCaller {
 
     public static void main(String[] args) {
         Database.initialize();
-        //AuthenticationCaller.call(new ArrayList<String>(), "login", "Member");
+        try {
+            AuthenticationCaller.call(new ArrayList<String>(), "login", "Member");
+        } catch (IllegalAccessException e) {
+
+        }
     }
 }

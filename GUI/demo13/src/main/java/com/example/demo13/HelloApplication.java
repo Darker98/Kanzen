@@ -62,20 +62,20 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        List<Column> columnObjects = createColumns();
-
-     //   List<Column> columnObjects = Column.add(this);
-        columns = new ArrayList<>();
-        for (Column column : columnObjects) {
-            MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
-            Label headerLabel = createHeaderLabel(column.getName(), "column-header");
-            listViewColumn.setHeader(headerLabel);
-            columns.add(listViewColumn);
-        }
+//        List<Column> columnObjects = createColumns();
+//
+//     //   List<Column> columnObjects = Column.add(this);
+//        columns = new ArrayList<>();
+//        for (Column column : columnObjects) {
+//            MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
+//            Label headerLabel = createHeaderLabel(column.getName(), "column-header");
+//            listViewColumn.setHeader(headerLabel);
+//            columns.add(listViewColumn);
+//        }
 
         multiColumnListView = new MultiColumnListView<>();
         multiColumnListView.setCellFactory(listView -> new IssueListCell(multiColumnListView));
-        multiColumnListView.getColumns().setAll(columns);
+//        multiColumnListView.getColumns().setAll(columns);
         multiColumnListView.setPlaceholderFrom(new Issue("From", "Done", null));
         multiColumnListView.setPlaceholderTo(new Issue("To", "Done", null));
 
@@ -168,6 +168,7 @@ public class HelloApplication extends Application {
         managerBtn.setStyle("-fx-background-color:#0598ff; -fx-font-size: 14px");
         managerBtn.setTextFill(Color.web("#ffffff"));
         managerBtn.setId("manager_btn");
+
 
         Label userLoginLabel = new Label("User Login");
         userLoginLabel.setTextFill(Color.web("#0589ff"));
@@ -435,9 +436,16 @@ public class HelloApplication extends Application {
         Scene scene2 = new Scene(loginbox);
         memberBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
-            AuthenticationCaller.call(parameters, "login", "Member");
+            try {
+                System.out.println("Calling auth");
+                AuthenticationCaller.call(parameters, "login", "Member");
+                System.out.println("Auth finished");
+            } catch (IllegalAccessException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No board found! Contact your manager to add you to a board.");
+                return;
+            }
 
-            //if (parameters.get(0) != null) {
+            if (parameters.get(0) != null) {
                 stage.setTitle("KanZen");
                 stage.setScene(scene);
                 stage.getIcons().add(kanzen_logo);
@@ -448,8 +456,33 @@ public class HelloApplication extends Application {
                 stage.setHeight(800);
 
                 stage.centerOnScreen();
-            //}
+            }
         });
+
+        managerBtn.setOnAction(actionEvent -> {
+            ArrayList<String> parameters = new ArrayList<String>();
+            try {
+                AuthenticationCaller.call(parameters, "login", "Manager");
+            } catch (IllegalAccessException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No board found! Contact your manager to add you to a board.");
+                return;
+            }
+
+            if (parameters.get(0) != null) {
+                stage.setTitle("KanZen");
+                stage.setScene(scene);
+                stage.getIcons().add(kanzen_logo);
+                //stage.setFullScreen(true);
+                stage.setWidth(1200);
+                //  multiColumnListView.setSeparatorFactory(null);
+
+                stage.setHeight(800);
+
+                stage.centerOnScreen();
+            }
+        });
+
+
         stage.setTitle("KanZen");
         stage.getTitle();
         stage.setScene(scene2);
@@ -467,43 +500,41 @@ public class HelloApplication extends Application {
 
         String cssPath = "src/main/java/com/example/demo13/multi-column-app.css"; // Specify the correct path
         scene.getStylesheets().add(new File(cssPath).toURI().toURL().toExternalForm());
-
-
     }
 
     // Create initial columns
-    public List<Column> createColumns() {
-        Column col1 = new Column("Backlog", 0);
-        Column col2 = new Column("To Do", 0);
-        Column col3 = new Column("In Flight", 0);
-        Column col4 = new Column("Done", 0);
-
-
-       // col1.setHeader(createHeaderLabel("Backlog", "column-header-backlog"));
-        col1.setName("Backlog");
-        col2.setName("To Do");
-        col3.setName("In Flight");
-        col4.setName("Done");
-
-
-
-        //col2.setHeader(createHeaderLabel("To Do","column-header-todo"));
-        //col3.setHeader(createHeaderLabel("In Flight","column-header-in-progress"));
-        //col4.setHeader(createHeaderLabel("Done","column-header-done"));
-
-//        col2.setItems(FXCollections.observableArrayList(new Issue("Jule", "important"), new Issue("Franz", "in-progress"), new Issue("Paul", "done"), new Issue("Orange", "todo"), new Issue("Yellow", "in-progress"), new Issue("Red", "done"), new Issue("Mango", "todo")));
-//        col3.setItems(FXCollections.observableArrayList(new Issue("Armin", "todo")));
-//        col4.setItems(FXCollections.observableArrayList(new Issue("Zaid", "todo")));
-
-
-        List<Column> columns = new ArrayList<>();
-        columns.add(col1);
-        columns.add(col2);
-        columns.add(col3);
-        columns.add(col4);
-
-        return columns;
-    }
+//    public List<Column> createColumns() {
+//        Column col1 = new Column("Backlog", 0);
+//        Column col2 = new Column("To Do", 0);
+//        Column col3 = new Column("In Flight", 0);
+//        Column col4 = new Column("Done", 0);
+//
+//
+//       // col1.setHeader(createHeaderLabel("Backlog", "column-header-backlog"));
+//        col1.setName("Backlog");
+//        col2.setName("To Do");
+//        col3.setName("In Flight");
+//        col4.setName("Done");
+//
+//
+//
+//        //col2.setHeader(createHeaderLabel("To Do","column-header-todo"));
+//        //col3.setHeader(createHeaderLabel("In Flight","column-header-in-progress"));
+//        //col4.setHeader(createHeaderLabel("Done","column-header-done"));
+//
+////        col2.setItems(FXCollections.observableArrayList(new Issue("Jule", "important"), new Issue("Franz", "in-progress"), new Issue("Paul", "done"), new Issue("Orange", "todo"), new Issue("Yellow", "in-progress"), new Issue("Red", "done"), new Issue("Mango", "todo")));
+////        col3.setItems(FXCollections.observableArrayList(new Issue("Armin", "todo")));
+////        col4.setItems(FXCollections.observableArrayList(new Issue("Zaid", "todo")));
+//
+//
+//        List<Column> columns = new ArrayList<>();
+//        columns.add(col1);
+//        columns.add(col2);
+//        columns.add(col3);
+//        columns.add(col4);
+//
+//        return columns;
+//    }
 
     private Label createHeaderLabel(String text, String styleClass){
         Label label = new Label(text);
@@ -512,6 +543,26 @@ public class HelloApplication extends Application {
 
     }
 
+
+    public void addColumn(Column column) {
+        if(multiColumnListView.getColumns().size() >= 6){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("Maximum number of Columns Reached");
+            alert.setContentText("You can only have two columns.");
+            alert.showAndWait();
+            return;
+        }
+
+        Label headerLabel = new Label(column.getName());
+        MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
+        column.setHeader(headerLabel);
+        column.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
+                "-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #6ec5ff 10%, #f4f4f4 70%);");
+
+        listViewColumn.setHeader(headerLabel);
+        multiColumnListView.getColumns().add(listViewColumn);
+    }
 
     // Add a new column to the multiColumnListView
     public void addColumn() {
@@ -533,7 +584,6 @@ public class HelloApplication extends Application {
             Column newColumn = new Column();
 
 
-            System.out.println(newColumn.getCardAmount());
             //Randomly select a color from the list
             Color random_color = headerColors.get(new Random().nextInt(headerColors.size()));
             //creating a label with a specified title and assigning it a random color
@@ -543,7 +593,6 @@ public class HelloApplication extends Application {
 
             //headerLabel.setStyle("-fx-background-color: " + toRgbString(random_color)+" ;"+ "fx-font-size: 20px; -fx-alignment: center; -fx-font-family: 'Times New Roman'; -fx-text-fill: white;");
             newColumn.setName(title);
-            System.out.println("Number of cards "+ newColumn.getCardAmount());
             MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
             newColumn.setHeader(headerLabel);
             newColumn.getHeader().setStyle("-fx-font-size: 40px; -fx-alignment: center; -fx-font-family:'Futura';" +
@@ -801,6 +850,12 @@ public class HelloApplication extends Application {
 
             columns.get(0).getItems().add(issue);
         });
+    }
+
+    public void initialColumns() {
+        for (Column column : Board.object.columns) {
+            addColumn(column);
+        }
     }
 
 

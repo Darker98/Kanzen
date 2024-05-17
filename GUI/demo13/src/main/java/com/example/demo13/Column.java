@@ -75,6 +75,10 @@ public class Column {
         return header;
     }
 
+    public void setHeader(Label header) {
+        this.header = header;
+    }
+
 //    // Delete a card
 //    public void deleteCard(String id) throws Exception {
 //        // Loop through array and remove card if id matches
