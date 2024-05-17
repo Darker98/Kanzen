@@ -5,19 +5,23 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Card {
-    private int id;
-    private String title;
-    private String description;
-    private String status;
-    private String label;
-    private boolean blocked;
-    private boolean urgent;
-    private Date date;
-    private Date dateCreated;
-    private ArrayList<Member> assigned;
+    public static int id_tracker = 0;
+    public String id;
+    public String title;
+    public String description;
+    public String status;
+    public String label;
+    public boolean blocked;
+    public boolean urgent;
+    public Date date;
+    public Date dateCreated;
+    public ArrayList<User> assigned;
+
+    // No arg constructor
+    public Card() { }
 
     // Constructor
-    public Card(int id, String title, String description, String status,
+    public Card(String id, String title, String description, String status,
                 String label, boolean blocked, boolean urgent, Date date) {
         this.id = id;
         this.title = title;
@@ -28,18 +32,18 @@ public class Card {
         this.urgent = urgent;
         this.date = date;
         this.dateCreated = new Date(); // Automatically set to current creation date
-        this.assigned = new ArrayList<Member>();
+        this.assigned = new ArrayList<User>();
     }
 
     public Card(int id, String title, String status) {
     }
 
 
-    public void setID(int id){
+    public void setID(String id){
         this.id = id;
     }
 
-    public int getID(){
+    public String getID(){
         return id;
     }
 
@@ -107,12 +111,12 @@ public class Card {
         return dateCreated;
     }
 
-    public ArrayList<Member> getMembers() {
+    public ArrayList<User> getMembers() {
         return assigned;
     }
 
 
-    public void addMember(Member member) {
+    public void addMember(User member) {
         assigned.add(member);
     }
 
@@ -132,6 +136,6 @@ public class Card {
         blocked = card.blocked;
         urgent = card.urgent;
         date = new Date(String.valueOf(card.date));
-        assigned = new ArrayList<Member>(card.assigned); // TODO: Fix
+        assigned = new ArrayList<User>(card.assigned); // TODO: Fix
     }
 }

@@ -6,36 +6,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Column {
-    private static int id_tracker = 0;
-    private int id;
-    private String name;
-    private int wip;
-    private int cardAmount;
+    public String id;
+    public String name;
+    public int wip;
+    //public int cardAmount;
     public ArrayList<Card> cards;
     //private ArrayList<Swimlane> swimlanes;
     public Label header;
-    Column(){
 
-    }
+
+    public Column() { }
+
     // Constructor
-    Column(String name, int wip) {
+    Column(String id, String name, int wip) {
         // Initialize values
-        id = id_tracker;
+        this.id = id;
         this.name = name;
         this.wip = wip;
-        cardAmount = 0;
+        //cardAmount = 0;
 
         // Initialize arrays
         cards = new ArrayList<Card>();
         header = new Label(name);
        // swimlanes = new ArrayList<Swimlane>();
-
-
-
-        id_tracker++;
     }
-
-
 
     // Setter for name
     public void setName(String name) {
@@ -58,63 +52,53 @@ public class Column {
     }
 
     // Setter for id
-    public void setID(int id) {
+    public void setID(String id) {
         this.id = id;
     }
 
     // Getter for id
-    public int getID() {
+    public String getID() {
         return id;
     }
 
     // Getter for cardsAmount
-    public int getCardAmount() {
-        return cardAmount;
-    }
+//    public int getCardAmount() {
+//        return cardAmount;
+//    }
 
-    public void  setHeader(Label header){
-    this.header = header;
-    }
-
+//    // Add a card
+//    public void addCard(Card card) {
+//        cards.add(card);
+//        cardAmount++;
+//    }
     public Label getHeader(){
         return header;
     }
 
-    // Add a card
-    public void addCard(HelloApplication.Issue card) {
-        cards.add(card);
-        cardAmount++;
-    }
+//    // Delete a card
+//    public void deleteCard(String id) throws Exception {
+//        // Loop through array and remove card if id matches
+//        for (int i = 0; i < cardAmount; i++) {
+//            if (cards.get(i).getID() == id) {
+//                cards.remove(i);
+//                cardAmount--;
+//                return;
+//            }
+//        }
+//
+//        throw new Exception("Invalid ID provided to deleteCard...");
+//    }
 
-    // Delete a card
-    public void deleteCard(int id) throws Exception {
-        // Loop through array and remove card if id matches
-        for (int i = 0; i < cardAmount; i++) {
-            if (cards.get(i).getID() == id) {
-                cards.remove(i);
-                cardAmount--;
-                return;
-            } 
-        }
-
-        throw new Exception("Invalid ID provided to deleteCard...");
-    }
-
-    // Get a card
-    public Card getCard(int id) throws Exception {
-        // Loop through array and return card if id matches
-        for (int i = 0; i < cardAmount; i++) {
-            if (cards.get(i).getID() == id) 
-                return cards.get(i);
-        }
-
-        throw new Exception("Invalid ID provided to getCard...");
-    }
-
-    public static List<Column> add(HelloApplication e) {
-        System.out.println("In add function...");
-        return e.createColumns();
-    }
+//    // Get a card
+//    public Card getCard(String id) throws Exception {
+//        // Loop through array and return card if id matches
+//        for (int i = 0; i < cardAmount; i++) {
+//            if (cards.get(i).getID() == id)
+//                return cards.get(i);
+//        }
+//
+//        throw new Exception("Invalid ID provided to getCard...");
+//    }
 
     // Add a swimlane
 //    public void addSwimlane(Swimlane swimlane) {
