@@ -104,7 +104,7 @@ public class HelloApplication extends Application {
         titleLabel.setPrefHeight(66);
 
         ImageView logoImageView = new ImageView();
-        logoImageView.setImage(new Image("file:src/main/logo with text.png"));
+        logoImageView.setImage(new Image("file:C:\\Users\\Home PC\\OneDrive\\Documents\\GitHub\\Kanzen\\GUI\\demo13\\src\\main\\logo with text.png"));
         logoImageView.setFitWidth(243);
         logoImageView.setFitHeight(251);
         logoImageView.setLayoutX(81);
@@ -430,7 +430,7 @@ public class HelloApplication extends Application {
         vbox.setPadding(new Insets(0));
         multiColumnListView.setPadding(new Insets(20));
 
-        Image kanzen_logo = new Image("file:src/main/logo with text.png");
+        Image kanzen_logo = new Image("file:C:\\Users\\Home PC\\OneDrive\\Documents\\GitHub\\Kanzen\\GUI\\demo13\\src\\main\\logo with text.png");
 
 
         Scene scene = new Scene(vbox);
