@@ -61,6 +61,15 @@ public class Database {
         } else {
             // Record exists, read user
             user = queryResults.get(0);
+
+            // If user is a member and did a manager login, upgrade user to manager
+            if (user.getStatus().equals("Member") && status.equals("Manager")) {
+                user.setStatus("Manager");
+
+                // Update user record
+                CosmosItemRequestOptions requestOptions = new CosmosItemRequestOptions();
+                CosmosItemResponse<User> response = users.replaceItem(User.object, User.object.getID(), new PartitionKey(User.object.getID()), requestOptions).block();
+            }
         }
 
         System.out.println(User.object.id);
@@ -138,8 +147,6 @@ public class Database {
             CosmosItemRequestOptions requestOptions = new CosmosItemRequestOptions();
             CosmosItemResponse<User> response = users.replaceItem(User.object, User.object.getID(), new PartitionKey(User.object.getID()), requestOptions).block();
         }
-
-        return;
     }
 
     public static synchronized void updateBoard() {
