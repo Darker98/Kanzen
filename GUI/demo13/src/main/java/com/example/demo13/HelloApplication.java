@@ -259,7 +259,7 @@ public class HelloApplication extends Application {
 
         Button editMenuButton = new Button("");
         FontAwesomeIcon edit = new FontAwesomeIcon();
-        edit.setGlyphName("COGWHEEL");
+        edit.setGlyphName("");
         editMenuButton.setStyle("-fx-background-color: #0598ff");
        // edit.setFill(Color.web("#ffffff"));
         edit.setSize("1.5em");
