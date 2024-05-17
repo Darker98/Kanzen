@@ -504,9 +504,22 @@ public class HelloApplication extends Application {
     private Label createHeaderLabel(String text, String styleClass){
         Label label = new Label(text);
         label.getStyleClass().add(styleClass);
-        return label;
+
+        Button delete_button_column = new Button("X");
+        delete_button_column.setOnAction(event -> {
+            MultiColumnListView.ListViewColumn<Issue> columnToRemove = null;
+            for (MultiColumnListView.ListViewColumn<Issue> column : multiColumnListView.getColumns()) {
+                Label headerLabel = (Label) column.getHeader();
+                if (headerLabel != null && text.equals(headerLabel.getText())) {
+
+
+
+        return new Label(null, headerbox);
 
     }
+
+
+
 
 
     // Add a new column to the multiColumnListView
