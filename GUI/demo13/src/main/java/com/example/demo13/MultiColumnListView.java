@@ -1,6 +1,7 @@
-package com.dlsc.gemsfx;
+package com.example.demo13;
 
-import com.dlsc.gemsfx.skins.MultiColumnListViewSkin;
+import com.example.demo13.AutoscrollListView;
+import com.example.demo13.MultiColumnListViewSkin;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -296,6 +297,8 @@ public class MultiColumnListView<T> extends Control {
     public static class ColumnListCell<T> extends ListCell<T> {
 
         private final MultiColumnListView<T> multiColumnListView;
+        int sourceColumnIndex, targetColumnIndex, initialItemIndex, finalItemIndex;
+        ObjectProperty<T> draggedItemRecord;
 
         /**
          * Creates a new list cell.
@@ -326,9 +329,6 @@ public class MultiColumnListView<T> extends Control {
                     return;
                 }
 
-                // Capture the index of the source column
-                sourceColumnIndex = multiColumnListView.getColumns().indexOf(getListView());
-
                 ClipboardContent content = new ClipboardContent();
                 content.putString(Integer.toString(getIndex()));
 
@@ -346,6 +346,7 @@ public class MultiColumnListView<T> extends Control {
                 event.consume();
 
                 multiColumnListView.setDraggedItem(getItem());
+                draggedItemRecord = multiColumnListView.draggedItem;
 
                 multiColumnListView.getDraggedItems().setAll(getListView().getSelectionModel().getSelectedItems());
 
@@ -391,9 +392,6 @@ public class MultiColumnListView<T> extends Control {
                 }
 
                 log("   performing drop");
-
-                // Capture the index of the target column
-                targetColumnIndex = multiColumnListView.getColumns().indexOf(getListView());
 
                 ListView<T> listView = getListView();
                 ObservableList<T> items = listView.getItems();
@@ -612,7 +610,7 @@ public class MultiColumnListView<T> extends Control {
 
         // for quick and dirty logging / debugging
         private void log(String text) {
-            // System.out.println(text);
+            //  System.out.println(text);
         }
     }
 }

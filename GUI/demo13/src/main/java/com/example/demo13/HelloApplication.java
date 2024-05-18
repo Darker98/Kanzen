@@ -1,6 +1,6 @@
 package com.example.demo13;
 
-import com.dlsc.gemsfx.MultiColumnListView;
+import com.example.demo13.MultiColumnListView;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
@@ -913,6 +913,21 @@ public class HelloApplication extends Application {
 
         }
 
+    }
+
+    public static void updateCard(int sourceColumn, int initialIndex, int targetColumn, int finalIndex) {
+        // Save card
+        Card draggedCard = Board.object.columns.get(sourceColumn).cards.get(initialIndex);
+
+        // Delete card from source column
+        Board.object.columns.get(sourceColumn).cards.remove(initialIndex);
+
+        // Add card to target column
+        Board.object.columns.get(sourceColumn).cards.add(finalIndex, draggedCard);
+
+        // Update database
+        System.out.println("Updating database");
+        Database.updateBoard();
     }
 
     public static void main(String[] args) {
