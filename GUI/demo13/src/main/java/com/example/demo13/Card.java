@@ -18,6 +18,8 @@ public class Card {
     public Date dateCreated;
     public ArrayList<User> assigned;
 
+
+
     // No arg constructor
     public Card() { }
 
