@@ -2,7 +2,7 @@ package com.example.demo13;
 
 import java.util.ArrayList;
 
-public class Board {
+public class  Board {
     public static Board object;
     public String id;
     public ArrayList<Column> columns;
