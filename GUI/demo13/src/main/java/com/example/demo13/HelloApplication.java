@@ -702,6 +702,7 @@ public class HelloApplication extends Application {
             super(multiColumnListView);
             getStyleClass().add("issue-list-cell");
 
+
             VBox content = new VBox();
             content.getStyleClass().add("content");
 
@@ -738,32 +739,100 @@ public class HelloApplication extends Application {
 
             due_date = new Label();
             due_date.setStyle("-fx-font-size: 10px;");
+            // Create ComboBox
+            ComboBox<String> dropdown = new ComboBox<>();
+            dropdown.getItems().addAll("Update", "Delete");
+            dropdown.setVisible(false);
 
+            this.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2 && !isEmpty()) {
 
-            delete_btn.setOnAction(event -> {
-                Issue issue = getItem();
-                if (issue != null) {
-                    getMultiColumnListView().getColumns().forEach(column ->{
-                        if (column.getItems().contains(issue)) {
-                            column.getItems().remove(issue);
-                        }
-                    });
-                    // Delete card from backend
-                    int i, j;
-                    ArrayList<Card> cardDel = new ArrayList<Card>();
-                    for (i = 0; i < Board.object.columns.size(); i++) {
-                        for (j = 0; j < Board.object.columns.get(i).cards.size(); j++) {
-                            if (issue.getID() == Board.object.columns.get(i).cards.get(j).getID()) {
-                                cardDel.add(Board.object.columns.get(i).cards.get(j));
-                                break;
+                    dropdown.setVisible(true);  // Show ComboBox on double-click
+                    dropdown.show();  // Show dropdown options
+
+                    dropdown.setOnAction(event -> {
+                        String selected_item = dropdown.getSelectionModel().getSelectedItem();
+
+                    if(selected_item == "Delete"){
+                        Issue issue = getItem();
+                        if(issue != null){
+                            getMultiColumnListView().getColumns().forEach(column->{
+                                if(column.getItems().contains(issue)){
+                                    column.getItems().remove(issue);
+                                }
+                            });
+
+                            int i, j;
+                            ArrayList<Card> cardDel = new ArrayList<Card>();
+                            for(i =0; i<Board.object.columns.size(); i++){
+                                for(j =0; j<Board.object.columns.get(i).cards.size(); j++){
+                                    if (issue.getID() == Board.object.columns.get(i).cards.get(j).getID()) {
+                                        cardDel.add(Board.object.columns.get(i).cards.get(j));
+                                        break;
+                                    }
+                                }
+                                if (!cardDel.isEmpty()) { break; }
                             }
+                            Board.object.columns.get(i).cards.remove(cardDel.getFirst());
+                            Database.updateBoard();
                         }
-                        if (!cardDel.isEmpty()) { break; }
+                    } else if (selected_item.equals("Update")) {
+                        Issue issue = getItem();
+                        TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
+                        dialog.setTitle("Update Card");
+                        dialog.setHeaderText("Enter New Description");
+                        Optional<String> result = dialog.showAndWait();
+                        result.ifPresent(description ->{
+                            getItem().updateTitle(description);
+                            updateItem(getItem(), isEmpty());
+                        });
+                        int i, j;
+                        ArrayList<Card> updated_cards = new ArrayList<>();
+                        for(i=0; i<Board.object.columns.size(); i++){
+                            for(j=0; j<Board.object.columns.get(i).cards.size(); j++){
+                                if(issue.getID() == Board.object.columns.get(i).cards.get(j).id){
+                                    updated_cards.add(Board.object.columns.get(i).cards.get(j));
+                                    break;
+                                }
+                            }
+                            String value = result.orElse("");
+                            updated_cards.get(i).setTitle(value);
+                            Database.updateBoard();
+                        }
                     }
-                    Board.object.columns.get(i).cards.remove(cardDel.getFirst());
-                    Database.updateBoard();
+
+                    });
+                    dropdown.getSelectionModel().clearSelection();
+                    dropdown.setVisible(false);
                 }
             });
+
+
+
+//            delete_btn.setOnAction(event -> {
+//                Issue issue = getItem();
+//                if (issue != null) {
+//                    getMultiColumnListView().getColumns().forEach(column ->{
+//                        if (column.getItems().contains(issue)) {
+//                            column.getItems().remove(issue);
+//                        }
+//                    });
+//                    // Delete card from backend
+//                    int i, j;
+//                    ArrayList<Card> cardDel = new ArrayList<Card>();
+//                    for (i = 0; i < Board.object.columns.size(); i++) {
+//                        for (j = 0; j < Board.object.columns.get(i).cards.size(); j++) {
+//                            if (issue.getID() == Board.object.columns.get(i).cards.get(j).getID()) {
+//                                cardDel.add(Board.object.columns.get(i).cards.get(j));
+//                                break;
+//                            }
+//                        }
+//                        if (!cardDel.isEmpty()) { break; }
+//                    }
+//                    Board.object.columns.get(i).cards.remove(cardDel.getFirst());
+//                    Database.updateBoard();
+//                }
+//            });
             Label update_label = new Label();
             FontAwesomeIcon update = new FontAwesomeIcon();
             update.setGlyphName("PENCIL");
@@ -772,42 +841,44 @@ public class HelloApplication extends Application {
             update_btn.setGraphic(update);
             update_label.setGraphic(update_btn);
             update_btn.setStyle("-fx-background-color: #27e868");
-            update_btn.setOnAction(event -> {
-                Issue issue = getItem();
-                TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
-                dialog.setTitle("Update Card");
-                dialog.setHeaderText("Enter New Description");
-                Optional<String> result = dialog.showAndWait();
-                result.ifPresent(description ->{
-                    getItem().updateTitle(description);
-                    updateItem(getItem(), isEmpty());
-                });
-                //Updating card in the backend
-                int i, j;
-                ArrayList<Card> updated_cards = new ArrayList<>();
-                for( i=0; i<Board.object.columns.size(); i++){
-                    for( j=0; j<Board.object.columns.get(i).cards.size(); j++){
-                        if(issue.getID() == Board.object.columns.get(i).cards.get(j).id){
-                            updated_cards.add(Board.object.columns.get(i).cards.get(j));
-                            break;
-                        }
-                    }
-                    String value = result.orElse("");
-                    updated_cards.get(i).setTitle(value);
-                    Database.updateBoard();
-                }
-            });
+//            update_btn.setOnAction(event -> {
+//                Issue issue = getItem();
+//                TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
+//                dialog.setTitle("Update Card");
+//                dialog.setHeaderText("Enter New Description");
+//                Optional<String> result = dialog.showAndWait();
+//                result.ifPresent(description ->{
+//                    getItem().updateTitle(description);
+//                    updateItem(getItem(), isEmpty());
+//                });
+//                //Updating card in the backend
+//                int i, j;
+//                ArrayList<Card> updated_cards = new ArrayList<>();
+//                for( i=0; i<Board.object.columns.size(); i++){
+//                    for( j=0; j<Board.object.columns.get(i).cards.size(); j++){
+//                        if(issue.getID() == Board.object.columns.get(i).cards.get(j).id){
+//                            updated_cards.add(Board.object.columns.get(i).cards.get(j));
+//                            break;
+//                        }
+//                    }
+//                    String value = result.orElse("");
+//                    updated_cards.get(i).setTitle(value);
+//                    Database.updateBoard();
+//                }
+//            });
             update_label.visibleProperty().bind(placeholder.not().and(emptyProperty().not()));
             update_label.managedProperty().bind(placeholder.not().and(emptyProperty().not()));
 
             wrapper = new StackPane(content, contentPlaceholder, label );
 
-            wrapper.getChildren().add(delete_label);
+            //wrapper.getChildren().add(delete_label);
+            wrapper.getChildren().add(dropdown);
             wrapper.getChildren().add(date_label);
-            wrapper.getChildren().add(update_label);
+          //  wrapper.getChildren().add(update_label);
             wrapper.getChildren().add(due_date);
-            wrapper.setAlignment(update_label,Pos.TOP_LEFT);
-            wrapper.setAlignment(delete_label,Pos.TOP_RIGHT);
+           // wrapper.setAlignment(update_label,Pos.TOP_LEFT);
+            wrapper.setAlignment(dropdown, Pos.TOP_RIGHT);
+          //  wrapper.setAlignment(delete_label,Pos.TOP_RIGHT);
             wrapper.setAlignment(date_label, Pos.BOTTOM_LEFT);
             wrapper.setAlignment(due_date, Pos.BOTTOM_RIGHT);
             setGraphic(wrapper);
@@ -902,6 +973,8 @@ public class HelloApplication extends Application {
                 columns.get(i).getItems().add(issue);
             }
         }
+
+
 
     }
 
