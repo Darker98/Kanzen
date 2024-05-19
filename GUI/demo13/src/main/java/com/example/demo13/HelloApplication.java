@@ -7,6 +7,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.css.StyleClass;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,6 +16,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -46,7 +48,21 @@ import java.util.*;
 
 import com.example.demo13.AuthenticationCaller;
 
+
+
+
+
+
 public class HelloApplication extends Application {
+      public void stage2(){
+          Stage secondaryStage = new Stage();
+          secondaryStage.setTitle("Manage Users");
+          secondaryStage.setMaxHeight(200);
+          secondaryStage.setMaxWidth(200);
+          secondaryStage.setTitle("Secondary Stage");
+          Button btnClose = new Button("Close");
+          btnClose.setOnAction(e -> secondaryStage.close());
+      }
     private MultiColumnListView<Issue> multiColumnListView;
     private List<MultiColumnListView.ListViewColumn<Issue>> columns;
     public static HelloApplication object;
@@ -59,8 +75,6 @@ public class HelloApplication extends Application {
     }
 
 
-
-
     @Override
     public void start(Stage stage) throws IOException {
         columns = new ArrayList<>();
@@ -71,9 +85,6 @@ public class HelloApplication extends Application {
 
         multiColumnListView.setPlaceholderFrom(new Issue(Database.generateId(),"From", "Done", null));
         multiColumnListView.setPlaceholderTo(new Issue(Database.generateId(),"To", "Done", null));
-
-
-
 
         stage.initStyle(StageStyle.DECORATED.UNDECORATED);
 
@@ -162,7 +173,6 @@ public class HelloApplication extends Application {
         managerBtn.setTextFill(Color.web("#ffffff"));
         managerBtn.setId("manager_btn");
 
-
         Label userLoginLabel = new Label("User Login");
         userLoginLabel.setTextFill(Color.web("#0589ff"));
         userLoginLabel.setFont(Font.font(16));
@@ -175,6 +185,8 @@ public class HelloApplication extends Application {
         loginbox.setRight(rightAnchorPane);
 
         VBox.setVgrow(multiColumnListView, Priority.ALWAYS);
+
+
 
         // Create menu items
         MenuItem addColumnMenuItem = new MenuItem("Add Column");
@@ -370,13 +382,42 @@ public class HelloApplication extends Application {
             invite_member.setStyle("-fx-background-color:#0598ff;");
         });
 
+        Button manager_btn = new Button("Manage users");
+        manager_btn.setOnAction(event -> {
+            VBox vBox = new VBox();
+
+            for(String email: Board.object.userEmails){
+                HBox h = new HBox(80);
+                FontAwesomeIcon delete_user_icon = new FontAwesomeIcon();
+                delete_user_icon.setGlyphName("TRASH");
+                Button delete_user = new Button("");
+                delete_user.setGraphic(delete_user_icon);
+                delete_user.setStyle("-fx-background-color: red;");
+                delete_user.setOnAction(event1 -> {
+                    Board.object.userEmails.remove(email);
+                    vBox.getChildren().remove(h);
+                    Database.updateBoard();
+
+                });
+
+                Label label = new Label(email);
+                h.getChildren().addAll(label,delete_user);
+                vBox.getChildren().add(h);
+            }
+            Scene scene3 = new Scene(vBox);
+            Stage stage1 = new Stage();
+            stage1.setScene(scene3);
+            stage1.show();
+
+        });
+
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS); // Allow spacer to grow horizontally
 
 
 // Add buttons to the buttonBox
-        buttonBox.getChildren().addAll(fileMenuButton, editMenuButton, signOutButton, create_card, create_column, invite_member, spacer,close);
+        buttonBox.getChildren().addAll(fileMenuButton, editMenuButton, signOutButton, create_card, create_column, invite_member, spacer,close,manager_btn);
 
 
         Button addColumnButton = new Button("Add Column");
@@ -417,6 +458,7 @@ public class HelloApplication extends Application {
 
         Scene scene = new Scene(vbox);
         Scene scene2 = new Scene(loginbox);
+
         memberBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
             try {
@@ -451,6 +493,8 @@ public class HelloApplication extends Application {
                 stage.centerOnScreen();
             }
         });
+
+
 
         managerBtn.setOnAction(event -> {
             ArrayList<String> parameters = new ArrayList<String>();
@@ -647,7 +691,6 @@ public class HelloApplication extends Application {
         private  String status;
 
         private LocalDateTime createdDate;
-
         private LocalDate dueDate;
 
 
@@ -685,6 +728,7 @@ public class HelloApplication extends Application {
             return dueDate;
         }
 
+
     }
 
 
@@ -701,7 +745,6 @@ public class HelloApplication extends Application {
 
             super(multiColumnListView);
             getStyleClass().add("issue-list-cell");
-
 
             VBox content = new VBox();
             content.getStyleClass().add("content");
@@ -739,10 +782,23 @@ public class HelloApplication extends Application {
 
             due_date = new Label();
             due_date.setStyle("-fx-font-size: 10px;");
+
+            FontAwesomeIcon block_icon = new FontAwesomeIcon();
+            block_icon.setGlyphName("EXCLAMATION");
+            block_icon.setFill(Color.web("#ffffff"));
+
+            Label block_label = new Label();
+            block_label.setGraphic(block_icon);
+            block_label.setPrefSize(20,20);
+            block_label.setAlignment(Pos.CENTER);
+            block_label.setStyle("-fx-background-color:red");
+            block_label.setVisible(false);
+
             // Create ComboBox
             ComboBox<String> dropdown = new ComboBox<>();
-            dropdown.getItems().addAll("Update", "Delete");
+            dropdown.getItems().addAll("Update", "Delete", "Block","Show Users");
             dropdown.setVisible(false);
+
 
             this.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getClickCount() == 2 && !isEmpty()) {
@@ -799,6 +855,16 @@ public class HelloApplication extends Application {
                             updated_cards.get(i).setTitle(value);
                             Database.updateBoard();
                         }
+                    } else if (selected_item == "Block") {
+
+                        block_label.setVisible(true);
+                        wrapper.getChildren().add(block_label);
+                        wrapper.setAlignment(block_label, Pos.TOP_RIGHT);
+                        Database.updateBoard();
+                    } else if (selected_item == "Show Users") {
+                        Board.object.userEmails.add("asdasda");
+                        System.out.println(Board.object.userEmails);
+
                     }
 
                     });
@@ -809,30 +875,6 @@ public class HelloApplication extends Application {
 
 
 
-//            delete_btn.setOnAction(event -> {
-//                Issue issue = getItem();
-//                if (issue != null) {
-//                    getMultiColumnListView().getColumns().forEach(column ->{
-//                        if (column.getItems().contains(issue)) {
-//                            column.getItems().remove(issue);
-//                        }
-//                    });
-//                    // Delete card from backend
-//                    int i, j;
-//                    ArrayList<Card> cardDel = new ArrayList<Card>();
-//                    for (i = 0; i < Board.object.columns.size(); i++) {
-//                        for (j = 0; j < Board.object.columns.get(i).cards.size(); j++) {
-//                            if (issue.getID() == Board.object.columns.get(i).cards.get(j).getID()) {
-//                                cardDel.add(Board.object.columns.get(i).cards.get(j));
-//                                break;
-//                            }
-//                        }
-//                        if (!cardDel.isEmpty()) { break; }
-//                    }
-//                    Board.object.columns.get(i).cards.remove(cardDel.getFirst());
-//                    Database.updateBoard();
-//                }
-//            });
             Label update_label = new Label();
             FontAwesomeIcon update = new FontAwesomeIcon();
             update.setGlyphName("PENCIL");
@@ -841,31 +883,8 @@ public class HelloApplication extends Application {
             update_btn.setGraphic(update);
             update_label.setGraphic(update_btn);
             update_btn.setStyle("-fx-background-color: #27e868");
-//            update_btn.setOnAction(event -> {
-//                Issue issue = getItem();
-//                TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
-//                dialog.setTitle("Update Card");
-//                dialog.setHeaderText("Enter New Description");
-//                Optional<String> result = dialog.showAndWait();
-//                result.ifPresent(description ->{
-//                    getItem().updateTitle(description);
-//                    updateItem(getItem(), isEmpty());
-//                });
-//                //Updating card in the backend
-//                int i, j;
-//                ArrayList<Card> updated_cards = new ArrayList<>();
-//                for( i=0; i<Board.object.columns.size(); i++){
-//                    for( j=0; j<Board.object.columns.get(i).cards.size(); j++){
-//                        if(issue.getID() == Board.object.columns.get(i).cards.get(j).id){
-//                            updated_cards.add(Board.object.columns.get(i).cards.get(j));
-//                            break;
-//                        }
-//                    }
-//                    String value = result.orElse("");
-//                    updated_cards.get(i).setTitle(value);
-//                    Database.updateBoard();
-//                }
-//            });
+
+
             update_label.visibleProperty().bind(placeholder.not().and(emptyProperty().not()));
             update_label.managedProperty().bind(placeholder.not().and(emptyProperty().not()));
 
@@ -874,6 +893,7 @@ public class HelloApplication extends Application {
             //wrapper.getChildren().add(delete_label);
             wrapper.getChildren().add(dropdown);
             wrapper.getChildren().add(date_label);
+
           //  wrapper.getChildren().add(update_label);
             wrapper.getChildren().add(due_date);
            // wrapper.setAlignment(update_label,Pos.TOP_LEFT);
@@ -913,6 +933,7 @@ public class HelloApplication extends Application {
                     // date_label.setText("Created On: "+item.getFormattedDate());
                     if (item.getDueDate() != null) {
                         due_date.setText("Due Date: " + item.getDueDate().toString());
+                        Database.updateBoard();
                     } else {
                         due_date.setText(""); // Clear due date label if no due date available
                     }
@@ -931,14 +952,21 @@ public class HelloApplication extends Application {
         dialog.getDialogPane().setStyle("-fx-background-color: #c7e7fc;");
 
         TextField titleField = new TextField();
-        ComboBox<String> statusComboBox = new ComboBox<>();
-        statusComboBox.getItems().addAll("todo", "in-progress", "done", "important");
+//        ComboBox<String> statusComboBox = new ComboBox<>();
+//        statusComboBox.getItems().addAll("todo", "in-progress", "done", "important");
+        ArrayList<String> colors = new ArrayList<>();
+        colors.add("todo");
+        colors.add("in-progress");
+        colors.add("done");
+        colors.add("important");
+
+
 
         DatePicker datePicker = new DatePicker();
         datePicker.setEditable(false);
 
 
-        dialog.getDialogPane().setContent(new VBox(10, new Label("Title:"), titleField, new Label("Status:"), statusComboBox, new Label("Due Date:", datePicker)));
+        dialog.getDialogPane().setContent(new VBox(10, new Label("Title:"), titleField, new Label("Due Date:", datePicker)));
 
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -946,7 +974,10 @@ public class HelloApplication extends Application {
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
                 String title = titleField.getText();
-                String status = statusComboBox.getValue();
+//                String status = statusComboBox.getValue();
+                Random random = new Random();
+                int random_numbr = random.nextInt(3);
+                String status = colors.get(random_numbr);
                 LocalDate dueDate = datePicker.getValue();
 
                 return new Issue(Database.generateId(),title, status, dueDate);
@@ -973,8 +1004,6 @@ public class HelloApplication extends Application {
                 columns.get(i).getItems().add(issue);
             }
         }
-
-
 
     }
 
