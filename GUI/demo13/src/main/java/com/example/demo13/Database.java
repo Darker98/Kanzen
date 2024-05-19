@@ -109,12 +109,12 @@ public class Database {
             if (AuthenticationCaller.status.equals("Manager")) {
                 System.out.println("Creating board");
                 board = new Board(boardId);
+                board.managerEmail = email;
                 board.columns.add(new Column(Database.generateId(), "Backlog", 100));
                 board.columns.add(new Column(Database.generateId(), "To Do", 100));
                 board.columns.add(new Column(Database.generateId(), "In Flight", 10));
                 board.columns.add(new Column(Database.generateId(), "Done", 100));
                 //board.columns.get(0).cards.add(new Card("Test", "testing...", "To Do", "To Do", false, false, new Date()));
-                board.userEmails.add(User.object.getEmail());
 
                 System.out.println("Converting to JSON");
                 // Convert the Board object to JSON using Jackson

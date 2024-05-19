@@ -640,6 +640,7 @@ public class HelloApplication extends Application {
             listViewColumn.setHeader(headerLabel);
             multiColumnListView.getColumns().add(listViewColumn);
             columns.add(listViewColumn);
+            originalColumns.add(listViewColumn);
 
             Database.updateBoard();
 
@@ -804,7 +805,7 @@ public class HelloApplication extends Application {
                             }
                             if (!updated_cards.isEmpty()) {
                                 String value = result.orElse("");
-                                updated_cards.get(i).setTitle(value);
+                                updated_cards.getFirst().setTitle(value);
                                 break;
                             }
                         }
@@ -970,6 +971,7 @@ public class HelloApplication extends Application {
             // Add the new issue to the first column
             Board.object.columns.get(0).cards.add(issue);
             columns.get(0).getItems().add(issue);
+            originalColumns.get(0).getItems().add(issue);
             Database.updateBoard();
         });
     }
@@ -994,6 +996,7 @@ public class HelloApplication extends Application {
             }
             originalColumns.add(listViewColumn);
         }
+        System.out.println(originalColumns.size());
     }
 
 
@@ -1051,6 +1054,11 @@ public class HelloApplication extends Application {
                     }
                 }
             }
+        }
+
+        if (finalItemIndex == -1) {
+            System.out.println("Card not moved...");
+            return;
         }
 
         // Save the changed card
