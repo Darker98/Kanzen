@@ -388,6 +388,15 @@ public class HelloApplication extends Application {
 
         Button manager_btn = new Button("Manage users");
         manager_btn.setOnAction(event -> {
+            if (AuthenticationCaller.status.equals("Member")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Access");
+                alert.setHeaderText("Only a manager can manage user access.");
+                alert.setContentText("Contact your manager if you want to add someone to the board.");
+                alert.showAndWait();
+                return;
+            }
+            
             VBox vBox = new VBox();
 
             for(String email: Board.object.userEmails){
@@ -801,7 +810,7 @@ public class HelloApplication extends Application {
 
             // Create ComboBox
             ComboBox<String> dropdown = new ComboBox<>();
-            dropdown.getItems().addAll("Update", "Delete", "Block","Show Users");
+            dropdown.getItems().addAll("Update", "Delete", "Block","Assign Card");
             dropdown.setVisible(false);
 
 
@@ -814,7 +823,7 @@ public class HelloApplication extends Application {
                     dropdown.setOnAction(event -> {
                         String selected_item = dropdown.getSelectionModel().getSelectedItem();
 
-                        if(selected_item.equals("Delete")){
+                        if(selected_item == "Delete"){
                             Issue issue = getItem();
                             if(issue != null){
                                 getMultiColumnListView().getColumns().forEach(column->{
@@ -837,7 +846,7 @@ public class HelloApplication extends Application {
                                 Board.object.columns.get(i).cards.remove(cardDel.getFirst());
                                 Database.updateBoard();
                             }
-                        } else if (selected_item.equals("Update")) {
+                        } else if (selected_item == "Update") {
                             Issue issue = getItem();
                             TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
                             dialog.setTitle("Update Card");
@@ -856,21 +865,32 @@ public class HelloApplication extends Application {
                                     break;
                                 }
                             }
-                            String value = result.orElse("");
-                            updated_cards.getFirst().setTitle(value);
-                            Database.updateBoard();
+                            if (!updated_cards.isEmpty()) {
+                                String value = result.orElse("");
+                                updated_cards.getFirst().setTitle(value);
+                                Database.updateBoard();
+
+                                break;
+                            }
                         }
                     } else if (selected_item == "Block") {
-
-                        block_label.setVisible(true);
-                        wrapper.getChildren().add(block_label);
-                        wrapper.setAlignment(block_label, Pos.TOP_RIGHT);
+                        if (block_label.isVisible()) {
+                            block_label.setVisible(false);
+                            getItem().blocked = false;
+                        } else {
+                            block_label.setVisible(true);
+                            getItem().blocked = true;
+                            wrapper.getChildren().add(block_label);
+                            wrapper.setAlignment(block_label, Pos.TOP_RIGHT);
+                        }
                         Database.updateBoard();
-                    } else if (selected_item == "Show Users") {
+                    } else if (selected_item == "Assign Card") {
                         Board.object.userEmails.add("asdasda");
                         System.out.println(Board.object.userEmails);
-
                     }
+                        else {
+
+                        }
 
                     });
                     dropdown.getSelectionModel().clearSelection();
