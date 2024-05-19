@@ -1,6 +1,8 @@
 package com.example.demo13;
 
 import com.example.demo13.MultiColumnListView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
@@ -17,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -48,8 +51,11 @@ import com.example.demo13.AuthenticationCaller;
 
 public class HelloApplication extends Application {
     private MultiColumnListView<Issue> multiColumnListView;
-    private List<MultiColumnListView.ListViewColumn<Issue>> columns;
+    public static List<MultiColumnListView.ListViewColumn<Issue>> columns;
     public static HelloApplication object;
+
+    // Create a copy of columns to track card movement
+    public static List<MultiColumnListView.ListViewColumn<Issue>> originalColumns;
 
     private void handleColumnChange(MultiColumnListView.ListViewColumn<Issue> column) {
         List<Issue> issues = column.getItems();
@@ -64,6 +70,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         columns = new ArrayList<>();
+        originalColumns = new ArrayList<>();
 
         MultiColumnListView.ListViewColumn<Issue> listViewColumn = new MultiColumnListView.ListViewColumn<>();
         multiColumnListView = new MultiColumnListView<>();
@@ -481,7 +488,7 @@ public class HelloApplication extends Application {
 
         signOutButton.setOnAction(e -> {
             try {
-                AuthenticationCaller.call(new ArrayList<String>(), "logout", User.object.status);
+                AuthenticationCaller.call(new ArrayList<String>(), "logout", "");
                 stage.setScene(scene2);
                 stage.setWidth(769);
                 stage.setHeight(523);
@@ -745,7 +752,7 @@ public class HelloApplication extends Application {
             dropdown.setVisible(false);
 
             this.setOnMouseClicked(mouseEvent -> {
-                if (mouseEvent.getClickCount() == 2 && !isEmpty()) {
+                if (mouseEvent.getButton() == MouseButton.SECONDARY && !isEmpty()) {
 
                     dropdown.setVisible(true);  // Show ComboBox on double-click
                     dropdown.show();  // Show dropdown options
@@ -753,52 +760,56 @@ public class HelloApplication extends Application {
                     dropdown.setOnAction(event -> {
                         String selected_item = dropdown.getSelectionModel().getSelectedItem();
 
-                    if(selected_item == "Delete"){
-                        Issue issue = getItem();
-                        if(issue != null){
-                            getMultiColumnListView().getColumns().forEach(column->{
-                                if(column.getItems().contains(issue)){
-                                    column.getItems().remove(issue);
-                                }
-                            });
-
-                            int i, j;
-                            ArrayList<Card> cardDel = new ArrayList<Card>();
-                            for(i =0; i<Board.object.columns.size(); i++){
-                                for(j =0; j<Board.object.columns.get(i).cards.size(); j++){
-                                    if (issue.getID() == Board.object.columns.get(i).cards.get(j).getID()) {
-                                        cardDel.add(Board.object.columns.get(i).cards.get(j));
-                                        break;
+                        if(selected_item.equals("Delete")){
+                            Issue issue = getItem();
+                            if(issue != null){
+                                getMultiColumnListView().getColumns().forEach(column->{
+                                    if(column.getItems().contains(issue)){
+                                        column.getItems().remove(issue);
                                     }
+                                });
+
+                                int i, j;
+                                ArrayList<Card> cardDel = new ArrayList<Card>();
+                                for(i =0; i<Board.object.columns.size(); i++){
+                                    for(j =0; j<Board.object.columns.get(i).cards.size(); j++){
+                                        if (issue.getID().equals(Board.object.columns.get(i).cards.get(j).getID())) {
+                                            cardDel.add(Board.object.columns.get(i).cards.get(j));
+                                            break;
+                                        }
+                                    }
+                                    if (!cardDel.isEmpty()) { break; }
                                 }
-                                if (!cardDel.isEmpty()) { break; }
+                                Board.object.columns.get(i).cards.remove(cardDel.getFirst());
+                                Database.updateBoard();
                             }
-                            Board.object.columns.get(i).cards.remove(cardDel.getFirst());
-                            Database.updateBoard();
-                        }
-                    } else if (selected_item.equals("Update")) {
-                        Issue issue = getItem();
-                        TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
-                        dialog.setTitle("Update Card");
-                        dialog.setHeaderText("Enter New Description");
-                        Optional<String> result = dialog.showAndWait();
-                        result.ifPresent(description ->{
-                            getItem().updateTitle(description);
-                            updateItem(getItem(), isEmpty());
+                        } else if (selected_item.equals("Update")) {
+                            Issue issue = getItem();
+                            TextInputDialog dialog = new TextInputDialog(getItem().getTitle());
+                            dialog.setTitle("Update Card");
+                            dialog.setHeaderText("Enter New Description");
+                            Optional<String> result = dialog.showAndWait();
+                            result.ifPresent(description ->{
+                                getItem().updateTitle(description);
+                                updateItem(getItem(), isEmpty());
                         });
                         int i, j;
                         ArrayList<Card> updated_cards = new ArrayList<>();
                         for(i=0; i<Board.object.columns.size(); i++){
                             for(j=0; j<Board.object.columns.get(i).cards.size(); j++){
-                                if(issue.getID() == Board.object.columns.get(i).cards.get(j).id){
+                                if(issue.getID().equals(Board.object.columns.get(i).cards.get(j).id)){
                                     updated_cards.add(Board.object.columns.get(i).cards.get(j));
                                     break;
                                 }
                             }
-                            String value = result.orElse("");
-                            updated_cards.get(i).setTitle(value);
-                            Database.updateBoard();
+                            if (!updated_cards.isEmpty()) {
+                                String value = result.orElse("");
+                                updated_cards.get(i).setTitle(value);
+                                break;
+                            }
                         }
+
+                        Database.updateBoard();
                     }
 
                     });
@@ -974,8 +985,15 @@ public class HelloApplication extends Application {
             }
         }
 
-
-
+        // Store a deepcopy of the columns
+        MultiColumnListView.ListViewColumn<Issue> listViewColumn;
+        for (MultiColumnListView.ListViewColumn<Issue> column : columns) {
+            listViewColumn = new MultiColumnListView.ListViewColumn<Issue>();
+            for (Issue copiedIssue : column.getItems()) {
+                listViewColumn.getItems().add(copiedIssue);
+            }
+            originalColumns.add(listViewColumn);
+        }
     }
 
 
@@ -988,18 +1006,74 @@ public class HelloApplication extends Application {
 
     }
 
-    public static void updateCard(int sourceColumn, int initialIndex, int targetColumn, int finalIndex) {
-        // Save card
-        Card draggedCard = Board.object.columns.get(sourceColumn).cards.get(initialIndex);
+    public static void moveCard() {
+        int initialColumnIndex = -1;
+        int initialItemIndex = -1;
+        int finalColumnIndex = -1;
+        int finalItemIndex = -1;
 
-        // Delete card from source column
-        Board.object.columns.get(sourceColumn).cards.remove(initialIndex);
+        // Track change made to columns
+        for (int i = 0; i < originalColumns.size(); i++) {
+            List<Issue> originalList = originalColumns.get(i).getItems();
+            List<Issue> currentList = columns.get(i).getItems();
+
+            if (!originalList.equals(currentList)) {
+                // Check for moved item
+                for (Issue item : originalList) {
+                    if (!currentList.contains(item)) {
+                        initialColumnIndex = i;
+                        initialItemIndex = originalList.indexOf(item);
+
+                        for (int j = 0; j < columns.size(); j++) {
+                            if (columns.get(j).getItems().contains(item)) {
+                                finalColumnIndex = j;
+                            }
+                        }
+                        finalItemIndex = columns.get(finalColumnIndex).getItems().indexOf(item);
+
+                        System.out.println("Item moved from Column " + initialColumnIndex + ", Index " + initialItemIndex +
+                                " to Column " + finalColumnIndex + ", Index " + finalItemIndex);
+                    }
+                }
+
+                // Check for items whose position changed within the same column
+                for (int k = 0; k < originalList.size(); k++) {
+                    Issue originalItem = originalList.get(k);
+                    int currentIndex = currentList.indexOf(originalItem);
+                    if (currentIndex != -1 && currentIndex != k) {
+                        initialColumnIndex = i;
+                        initialItemIndex = k;
+                        finalColumnIndex = i;
+                        finalItemIndex = currentIndex;
+
+                        System.out.println("Item moved within Column " + initialColumnIndex + " from Index " + initialItemIndex +
+                                " to Index " + finalItemIndex);
+                    }
+                }
+            }
+        }
+
+        // Save the changed card
+        Card movedCard = Board.object.columns.get(initialColumnIndex).cards.get(initialItemIndex);
+
+        // Remove card from source column
+        Board.object.columns.get(initialColumnIndex).cards.remove(initialItemIndex);
 
         // Add card to target column
-        Board.object.columns.get(sourceColumn).cards.add(finalIndex, draggedCard);
+        Board.object.columns.get(finalColumnIndex).cards.add(finalItemIndex, movedCard);
+
+        // Store a deepcopy of the changed columns
+        originalColumns = new ArrayList<>();
+        MultiColumnListView.ListViewColumn<Issue> listViewColumn;
+        for (MultiColumnListView.ListViewColumn<Issue> column : columns) {
+            listViewColumn = new MultiColumnListView.ListViewColumn<Issue>();
+            for (Issue copiedIssue : column.getItems()) {
+                listViewColumn.getItems().add(copiedIssue);
+            }
+            originalColumns.add(listViewColumn);
+        }
 
         // Update database
-        System.out.println("Updating database");
         Database.updateBoard();
     }
 

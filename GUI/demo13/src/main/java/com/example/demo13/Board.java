@@ -7,6 +7,7 @@ public class  Board {
     public String id;
     public ArrayList<Column> columns;
     public ArrayList<String> userEmails;
+    public String managerEmail;
 
     public Board() {
         object = this;

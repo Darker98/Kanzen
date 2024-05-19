@@ -425,6 +425,7 @@ public class MultiColumnListView<T> extends Control {
                     if (Objects.equals(evt.getAcceptedTransferMode(), TransferMode.MOVE)) {
                         log("   drop was completed, removing the 'from' placeholder");
                         getListView().getItems().removeIf(item -> item == multiColumnListView.getPlaceholderFrom());
+                        HelloApplication.moveCard();
                     } else {
                         log("   drop was not completed, replacing placeholder with dragged item");
                         getListView().getItems().replaceAll(item -> {
@@ -610,7 +611,7 @@ public class MultiColumnListView<T> extends Control {
 
         // for quick and dirty logging / debugging
         private void log(String text) {
-            //  System.out.println(text);
+            //  System.out.println(text + initialItemIndex + sourceColumnIndex);
         }
     }
 }

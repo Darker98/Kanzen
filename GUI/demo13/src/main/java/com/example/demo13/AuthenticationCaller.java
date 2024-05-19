@@ -22,6 +22,8 @@ import com.example.demo13.Database;
 import java.util.ArrayList;
 
 public class AuthenticationCaller {
+    public static String status;
+
     public static void call(ArrayList<String> parameters, String procedure, String status) throws IllegalAccessException {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("src/main/java/com/example/demo13/Auth/bin/Debug/net8.0-windows/Auth.exe",
@@ -75,6 +77,7 @@ public class AuthenticationCaller {
             process.waitFor();
 
             // Access database if successful login
+            AuthenticationCaller.status = status;
             if (id != null && email != null) {
                 try {
                     Database.getUser(id, name, email, status);

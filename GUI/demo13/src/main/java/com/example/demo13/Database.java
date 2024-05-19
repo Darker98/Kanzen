@@ -61,24 +61,15 @@ public class Database {
         } else {
             // Record exists, read user
             user = queryResults.get(0);
-
-            // If user is a member and did a manager login, upgrade user to manager
-            if (user.getStatus().equals("Member") && status.equals("Manager")) {
-                user.setStatus("Manager");
-
-                // Update user record
-                CosmosItemRequestOptions requestOptions = new CosmosItemRequestOptions();
-                CosmosItemResponse<User> response = users.replaceItem(User.object, User.object.getID(), new PartitionKey(User.object.getID()), requestOptions).block();
-            }
         }
 
         System.out.println(User.object.id);
 
         // Get board associated with user
-        getBoard(user.getBoardId(), user.getEmail());
+        getBoard(user.getBoardId(), user.getEmail(), status);
     }
 
-    public static void getBoard(String boardId, String email) throws IllegalAccessException {
+    public static void getBoard(String boardId, String email, String status) throws IllegalAccessException {
         String queryString;
         List<SqlParameter> sqlParameters;
         SqlQuerySpec sqlQuerySpec;
@@ -90,9 +81,9 @@ public class Database {
         // Query the record
         // Query by id if Manager
         // Query by email if Member
-        if (User.object.getStatus().equals("Manager")) {
-            queryString = "SELECT * FROM c WHERE c.id = @id";
-            sqlParameters = Collections.singletonList(new SqlParameter("@id", boardId));
+        if (AuthenticationCaller.status.equals("Manager")) {
+            queryString = "SELECT * FROM c WHERE c.managerEmail = @email";
+            sqlParameters = Collections.singletonList(new SqlParameter("@email", email));
             sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
             queryOptions = new CosmosQueryRequestOptions()
                     .setPartitionKey(new PartitionKey(boardId));
@@ -115,7 +106,7 @@ public class Database {
         // If not exist
         if (queryResult.isEmpty()) {
             // Make a new board if it is a manager login
-            if (User.object.getStatus().equals("Manager")) {
+            if (AuthenticationCaller.status.equals("Manager")) {
                 System.out.println("Creating board");
                 board = new Board(boardId);
                 board.columns.add(new Column(Database.generateId(), "Backlog", 100));
@@ -150,6 +141,7 @@ public class Database {
     }
 
     public static synchronized void updateBoard() {
+        System.out.println("Updating board...");
         Board board = Board.object;
         CosmosItemRequestOptions requestOptions = new CosmosItemRequestOptions();
         CosmosItemResponse<Board> response = boards.replaceItem(board, board.getBoardId(), new PartitionKey(board.getBoardId()), requestOptions).block();
