@@ -18,6 +18,8 @@ public class Card {
     public Date dateCreated;
     public ArrayList<User> assigned;
 
+    public String Email_address;
+
 
 
     // No arg constructor
@@ -112,6 +114,14 @@ public class Card {
 
     public Date getDateCreated(){
         return dateCreated;
+    }
+
+    public void setEmail_address(String Email_address){
+        this.Email_address =  Email_address;
+    }
+
+    public String getEmail_address(){
+        return Email_address;
     }
 
     public ArrayList<User> getMembers() {

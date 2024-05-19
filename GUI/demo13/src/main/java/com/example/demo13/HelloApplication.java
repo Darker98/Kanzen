@@ -30,7 +30,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.util.Callback;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-
+import java.util.regex.Pattern;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,20 +49,8 @@ import java.util.*;
 import com.example.demo13.AuthenticationCaller;
 
 
-
-
-
-
 public class HelloApplication extends Application {
-      public void stage2(){
-          Stage secondaryStage = new Stage();
-          secondaryStage.setTitle("Manage Users");
-          secondaryStage.setMaxHeight(200);
-          secondaryStage.setMaxWidth(200);
-          secondaryStage.setTitle("Secondary Stage");
-          Button btnClose = new Button("Close");
-          btnClose.setOnAction(e -> secondaryStage.close());
-      }
+
     private MultiColumnListView<Issue> multiColumnListView;
     private List<MultiColumnListView.ListViewColumn<Issue>> columns;
     public static HelloApplication object;
@@ -73,7 +61,10 @@ public class HelloApplication extends Application {
 
         Database.updateBoard();
     }
-
+    public  boolean isValidEmail(String email){
+        String range = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        return email.matches(range);
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -257,7 +248,7 @@ public class HelloApplication extends Application {
 
         Button signOutButton = new Button("");
         FontAwesomeIcon signout = new FontAwesomeIcon();
-        signout.setGlyphName("USER");
+        signout.setGlyphName("SIGN_OUT");
         signOutButton.setStyle("-fx-background-color: #0598ff");
         // signout.setFill(Color.web("#ffffff"));
         signout.setSize("1.5em");
@@ -294,7 +285,7 @@ public class HelloApplication extends Application {
 
         Button create_column = new Button("");
         FontAwesomeIcon col = new FontAwesomeIcon();
-        col.setGlyphName("BOOKMARK");
+        col.setGlyphName("TH");
         create_column.setStyle("-fx-background-color: #0598ff");
         // col.setFill(Color.web("#ffffff"));
         col.setSize("1.5em");
@@ -317,6 +308,7 @@ public class HelloApplication extends Application {
                     }
                 }catch (NumberFormatException e){
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid number of columns");
+
                 }
             });
         });
@@ -382,30 +374,77 @@ public class HelloApplication extends Application {
             invite_member.setStyle("-fx-background-color:#0598ff;");
         });
 
-        Button manager_btn = new Button("Manage users");
+
+         FontAwesomeIcon i = new FontAwesomeIcon();
+         i.setGlyphName("USER_PLUS");
+         i.setSize("1.5em");
+         Tooltip t = new Tooltip("Manager Users");
+        Button manager_btn = new Button("");
+        manager_btn.setTooltip(t);
+        manager_btn.setStyle("-fx-background-color: #0598ff;");
+        manager_btn.setGraphic(i);
         manager_btn.setOnAction(event -> {
             VBox vBox = new VBox();
 
             for(String email: Board.object.userEmails){
-                HBox h = new HBox(80);
+                HBox h = new HBox(10);
                 FontAwesomeIcon delete_user_icon = new FontAwesomeIcon();
                 delete_user_icon.setGlyphName("TRASH");
                 Button delete_user = new Button("");
                 delete_user.setGraphic(delete_user_icon);
                 delete_user.setStyle("-fx-background-color: red;");
+
                 delete_user.setOnAction(event1 -> {
                     Board.object.userEmails.remove(email);
                     vBox.getChildren().remove(h);
                     Database.updateBoard();
 
+
                 });
 
+                FontAwesomeIcon add_user_icon = new FontAwesomeIcon();
+                add_user_icon.setGlyphName("PLUS");
+                Button adduser = new Button();
+                adduser.setGraphic(add_user_icon);
+                adduser.setStyle("-fx-background-color:#00ff00;");
+                adduser.setOnAction(event1 -> {
+                TextInputDialog dia = new TextInputDialog();
+                dia.setTitle("Add User");
+                dia.setHeaderText("Enter the e-mail");
+                dia.setContentText("E-mail:");
+                Optional<String> result= dia.showAndWait();
+                result.ifPresent(e->{
+                    if(isValidEmail(e)) {
+                        Board.object.userEmails.add(dia.getResult());
+                        Label a = new Label(dia.getResult());
+                         a.setPrefWidth(600);
+                         a.setStyle("fx-font-size: 16px;");
+                        HBox hBox = new HBox(10);
+                        hBox.getChildren().addAll(a, delete_user, adduser);
+                        vBox.getChildren().add(hBox);
+                        Database.updateBoard();
+                    }
+                    else{
+                        Alert email_alet = new Alert(Alert.AlertType.ERROR, "Please enter a valid email address");
+                        email_alet.showAndWait();
+                    }
+                });
+
+});
+
+
                 Label label = new Label(email);
-                h.getChildren().addAll(label,delete_user);
+                label.setPrefWidth(600);
+                label.setStyle("-fx-font-size: 16px;");
+                 h.setStyle("-fx-boreder-color: black;");
+                h.getChildren().addAll(label,delete_user, adduser);
                 vBox.getChildren().add(h);
             }
             Scene scene3 = new Scene(vBox);
             Stage stage1 = new Stage();
+            stage1.setWidth(500);
+            stage1.setHeight(200);
+            stage1.setTitle("Manage Users");
             stage1.setScene(scene3);
             stage1.show();
 
@@ -417,7 +456,7 @@ public class HelloApplication extends Application {
 
 
 // Add buttons to the buttonBox
-        buttonBox.getChildren().addAll(fileMenuButton, editMenuButton, signOutButton, create_card, create_column, invite_member, spacer,close,manager_btn);
+        buttonBox.getChildren().addAll(  signOutButton, create_card, create_column, invite_member, spacer,close,manager_btn);
 
 
         Button addColumnButton = new Button("Add Column");
@@ -440,6 +479,8 @@ public class HelloApplication extends Application {
                 multiColumnListView.setSeparatorFactory(null);
             }
         });
+
+
 
         //Login Window close action.
         close_btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -689,11 +730,9 @@ public class HelloApplication extends Application {
     public static class Issue extends Card{
         private  String title;
         private  String status;
-
         private LocalDateTime createdDate;
         private LocalDate dueDate;
-
-
+        public static String email_address;
         public Issue (String id, String title, String status, LocalDate dueDate)  {
             this.id = id;
             this.title = title;
@@ -717,6 +756,7 @@ public class HelloApplication extends Application {
 
         public String getFormattedDate(){
             DateTimeFormatter formatter =  DateTimeFormatter.ofPattern("dd-MM-yyyy ");
+
             return getCreatedDate().format(formatter);
         }
 
@@ -728,7 +768,14 @@ public class HelloApplication extends Application {
             return dueDate;
         }
 
+        public void setEmail_address(String email_address){
+            this.email_address = email_address;
+        }
 
+        public  String getEmail_address()
+        {
+            return email_address;
+        }
     }
 
 
@@ -796,7 +843,7 @@ public class HelloApplication extends Application {
 
             // Create ComboBox
             ComboBox<String> dropdown = new ComboBox<>();
-            dropdown.getItems().addAll("Update", "Delete", "Block","Show Users");
+            dropdown.getItems().addAll("Update", "Delete", "Block","Assign User");
             dropdown.setVisible(false);
 
 
@@ -861,9 +908,54 @@ public class HelloApplication extends Application {
                         wrapper.getChildren().add(block_label);
                         wrapper.setAlignment(block_label, Pos.TOP_RIGHT);
                         Database.updateBoard();
-                    } else if (selected_item == "Show Users") {
-                        Board.object.userEmails.add("asdasda");
-                        System.out.println(Board.object.userEmails);
+                    } else if (selected_item == "Assign User") {
+
+                        VBox mmebers = new VBox();
+                        mmebers.setPrefWidth(500);
+                        mmebers.setPrefHeight(200);
+                        mmebers.setStyle("-fx-font-size:16px;");
+
+                        for(String email: Board.object.userEmails){
+                            Label l = new Label(email);
+                            l.setStyle("-fx-border-color: black;");
+                            l.setPrefWidth(500);
+                            mmebers.getChildren().add(l);
+                            l.setOnMouseClicked(mouseEvent1 -> {
+                                String e = l.getText();
+                                Issue issue = getItem();
+                                if(issue != null){
+                                    issue.setEmail_address(e);
+                                    wrapping_email(e);
+                                     Database.updateBoard();
+                                    for(Column column : Board.object.columns){
+                                        for(Card card : column.cards){
+                                           
+                                            if(card.getID() == issue.getID()){
+                                                card.setEmail_address(e);
+                                              
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    
+                                    Database.updateBoard();
+
+                                    
+                                }
+
+
+                                
+                            });
+                        }
+
+                        Scene scene4 = new Scene(mmebers);
+                        Stage stage4 = new Stage();
+                        stage4.setTitle("Users");
+                        stage4.setWidth(500);
+                        stage4.setHeight(200);
+                        stage4.setScene(scene4);
+                        stage4.show();
+
 
                     }
 
@@ -888,6 +980,9 @@ public class HelloApplication extends Application {
             update_label.visibleProperty().bind(placeholder.not().and(emptyProperty().not()));
             update_label.managedProperty().bind(placeholder.not().and(emptyProperty().not()));
 
+
+
+
             wrapper = new StackPane(content, contentPlaceholder, label );
 
             //wrapper.getChildren().add(delete_label);
@@ -903,6 +998,15 @@ public class HelloApplication extends Application {
             wrapper.setAlignment(due_date, Pos.BOTTOM_RIGHT);
             setGraphic(wrapper);
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        }
+
+        public void wrapping_email(String email){
+                 Label user = new Label(email);
+                 user.setStyle("-fx-font-size:10px;");
+                 wrapper.getChildren().add(user);
+                 wrapper.setAlignment(user,Pos.TOP_LEFT);
+
+
         }
 
         @Override
@@ -934,9 +1038,9 @@ public class HelloApplication extends Application {
                     if (item.getDueDate() != null) {
                         due_date.setText("Due Date: " + item.getDueDate().toString());
                         Database.updateBoard();
-                    } else {
-                        due_date.setText(""); // Clear due date label if no due date available
                     }
+
+                    
                 }
             } else {
                 setText("");
@@ -979,7 +1083,7 @@ public class HelloApplication extends Application {
                 int random_numbr = random.nextInt(3);
                 String status = colors.get(random_numbr);
                 LocalDate dueDate = datePicker.getValue();
-
+                
                 return new Issue(Database.generateId(),title, status, dueDate);
             }
             return null;
@@ -1002,6 +1106,7 @@ public class HelloApplication extends Application {
                 card = Board.object.columns.get(i).cards.get(j);
                 issue = new Issue(card.id, card.title, card.status, card.date);
                 columns.get(i).getItems().add(issue);
+
             }
         }
 
@@ -1020,6 +1125,7 @@ public class HelloApplication extends Application {
     public static void updateCard(int sourceColumn, int initialIndex, int targetColumn, int finalIndex) {
         // Save card
         Card draggedCard = Board.object.columns.get(sourceColumn).cards.get(initialIndex);
+
 
         // Delete card from source column
         Board.object.columns.get(sourceColumn).cards.remove(initialIndex);
