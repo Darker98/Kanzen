@@ -90,7 +90,7 @@ public class Database {
             queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
                     .byPage().blockFirst().getResults();
         } else {
-            queryString = "SELECT * FROM c WHERE userEmails_CONTAINS(c.users, @userEmail)";
+            queryString = "SELECT * FROM c WHERE userEmails CONTAINS(c.users, @userEmail)";
             sqlParameters = Collections.singletonList(new SqlParameter("@userEmail", email));
             sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
 
@@ -130,8 +130,6 @@ public class Database {
         } else {
             // If exists, read from database
             board = queryResult.get(0);
-
-            System.out.println(board.userEmails);
 
             // Update user record
             User.object.boardId = board.getBoardId();
