@@ -1,10 +1,10 @@
-package com.kanzen.signalRserver;
+package com.kanzen.signalrServer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SignalRServerApplicationTests {
+class SignalrServerApplicationTests {
 
 	@Test
 	void contextLoads() {

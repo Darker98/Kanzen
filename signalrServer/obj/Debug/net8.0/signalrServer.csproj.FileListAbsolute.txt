@@ -1,0 +1,7 @@
+C:\Users\zmsid\Documents\GitHub\Kanzen\signalrServer\obj\Debug\net8.0\signalrServer.csproj.AssemblyReference.cache
+C:\Users\zmsid\Documents\GitHub\Kanzen\signalrServer\obj\Debug\net8.0\signalrServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\zmsid\Documents\GitHub\Kanzen\signalrServer\obj\Debug\net8.0\signalrServer.AssemblyInfoInputs.cache
+C:\Users\zmsid\Documents\GitHub\Kanzen\signalrServer\obj\Debug\net8.0\signalrServer.AssemblyInfo.cs
+C:\Users\zmsid\Documents\GitHub\Kanzen\signalrServer\obj\Debug\net8.0\signalrServer.csproj.CoreCompileInputs.cache
+C:\Users\zmsid\Documents\GitHub\Kanzen\signalrServer\obj\Debug\net8.0\signalrServer.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\zmsid\Documents\GitHub\Kanzen\signalrServer\obj\Debug\net8.0\signalrServer.sourcelink.json

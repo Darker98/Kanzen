@@ -1,13 +1,13 @@
-package com.kanzen.signalRserver;
+package com.kanzen.signalrServer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SignalRServerApplication {
+public class SignalrServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SignalRServerApplication.class, args);
+		SpringApplication.run(SignalrServerApplication.class, args);
 	}
 
 }
