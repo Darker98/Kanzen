@@ -140,6 +140,19 @@ public class Database {
         }
     }
 
+    public static HelloApplication.Issue getAddedCard(String boardId) {
+        String queryString = "SELECT c.columns[0].cards[-1] AS card WHERE c.id = @boardId";
+        List<SqlParameter> sqlParameters = Collections.singletonList(new SqlParameter("@boardId", boardId));
+        SqlQuerySpec sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
+        CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions()
+                .setPartitionKey(new PartitionKey(User.object.boardId));
+        List<Card> queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Card.class)
+                .byPage().blockFirst().getResults();
+
+        Card card = queryResult.getFirst();
+        return ((HelloApplication.Issue) card);
+    }
+
     public static synchronized void updateBoard() {
         System.out.println("Updating board...");
         Board board = Board.object;

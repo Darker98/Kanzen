@@ -55,6 +55,8 @@ public class HelloApplication extends Application {
     private MultiColumnListView<Issue> multiColumnListView;
     public static List<MultiColumnListView.ListViewColumn<Issue>> columns;
     public static HelloApplication object;
+    public static SignalRClient signalR;
+    public static boolean messageSender;
 
     // Create a copy of columns to track card movement
     public static List<MultiColumnListView.ListViewColumn<Issue>> originalColumns;
@@ -74,6 +76,27 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        signalR = new SignalRClient();
+        signalR.start();
+        messageSender = false;
+
+        // Add message listener
+        signalR.addMessageListener(new SignalRMessageListener() {
+            @Override
+            public void onMessageReceived(List<Integer> message) {
+                if (messageSender) {
+                    messageSender = false;
+                    return;
+                }
+                
+                switch (message.get(0)) {
+                    // If adding a card
+                    case 0:
+                        addCard(Database.getAddedCard(Board.object.getBoardId()), false);
+                }
+            }
+        });
+
         columns = new ArrayList<>();
         originalColumns = new ArrayList<>();
 
@@ -1119,12 +1142,21 @@ public class HelloApplication extends Application {
 
         Optional<Issue> result = dialog.showAndWait();
         result.ifPresent(issue -> {
-            // Add the new issue to the first column
-            Board.object.columns.get(0).cards.add(issue);
-            columns.get(0).getItems().add(issue);
-            originalColumns.get(0).getItems().add(issue);
-            Database.updateBoard();
+            addCard(issue, true);
         });
+    }
+
+    public void addCard(Issue issue, boolean original) {
+        Board.object.columns.get(0).cards.add(issue);
+        columns.get(0).getItems().add(issue);
+        originalColumns.get(0).getItems().add(issue);
+
+        if (original) {
+            Database.updateBoard();
+            int[] numbers = { 0 };
+            signalR.sendMessage(Board.object.getBoardId(), numbers);
+
+        }
     }
 
     public void initialCards() {
