@@ -411,6 +411,18 @@ public class HelloApplication extends Application {
         invite_member.setOnMouseExited(event->{
             invite_member.setStyle("-fx-background-color:#0598ff;");
         });
+        
+        invite_member.setOnAction(Event -> {
+            TextInputDialog dialog = new TextInputDialog();
+            Optional<String> email = dialog.showAndWait();
+            dialog.setTitle("Add user");
+            dialog.setHeaderText("Enter the email of the user.");
+            dialog.setContentText("Email");
+            email.ifPresent(e -> {
+                Board.object.userEmails.add(dialog.getResult());
+                Database.updateBoard();
+            });
+        });
 
 
          FontAwesomeIcon i = new FontAwesomeIcon();

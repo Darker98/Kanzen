@@ -40,7 +40,11 @@ public class Card {
         this.assigned = new ArrayList<User>();
     }
 
-    public Card(String id, String title, String status) {
+    public Card(String id, String title, String status, LocalDate date) {
+        this.id = id;
+        this.title = title;
+        this.status = status;
+        this.date = date;
     }
 
 
