@@ -18,7 +18,8 @@ import javafx.scene.layout.Region;
  *
  * @param <T> the item type
  */
-public class AutoscrollListView<T> extends ListView<T> {
+public class
+AutoscrollListView<T> extends ListView<T> {
 
     final double proximity = 20;
 

@@ -154,10 +154,8 @@ public class Database {
 
         Board board = queryResult.getFirst();
         Card card = board.columns.getFirst().cards.getLast();
-        System.out.println(card.getTitle());
-        HelloApplication.Issue issue = (HelloApplication.Issue) card;
-        System.out.println(issue.getTitle());
-        return issue;
+
+        return new HelloApplication.Issue(card.getID(), card.getTitle(), card.getStatus(), card.getDate());
     }
 
     public static synchronized void updateBoard() {
