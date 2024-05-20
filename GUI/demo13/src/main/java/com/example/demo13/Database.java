@@ -153,7 +153,11 @@ public class Database {
                 .byPage().blockFirst().getResults();
 
         Board board = queryResult.getFirst();
-        return ((HelloApplication.Issue) board.columns.getFirst().cards.getLast());
+        Card card = board.columns.getFirst().cards.getLast();
+        System.out.println(card.getTitle());
+        HelloApplication.Issue issue = (HelloApplication.Issue) card;
+        System.out.println(issue.getTitle());
+        return issue;
     }
 
     public static synchronized void updateBoard() {
