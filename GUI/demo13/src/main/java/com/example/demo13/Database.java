@@ -158,6 +158,21 @@ public class Database {
         return new HelloApplication.Issue(card.getID(), card.getTitle(), card.getStatus(), card.getDate());
     }
 
+    public static HelloApplication.Issue getCard(int finalColumn, int finalIndex) {
+        String queryString = "SELECT * FROM c WHERE c.id = @boardId";
+        List<SqlParameter> sqlParameters = Collections.singletonList(new SqlParameter("@boardId", Board.object.getBoardId()));
+        SqlQuerySpec sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
+        CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions()
+                .setPartitionKey(new PartitionKey(Board.object.getBoardId()));
+        List<Board> queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
+                .byPage().blockFirst().getResults();
+
+        Board board = queryResult.getFirst();
+        Card card = board.columns.get(finalColumn).cards.get(finalIndex);
+
+        return new HelloApplication.Issue(card.getID(), card.getTitle(), card.getStatus(), card.getDate());
+    }
+
     public static synchronized void updateBoard() {
         System.out.println("Updating board...");
         Board board = Board.object;

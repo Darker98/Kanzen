@@ -96,6 +96,9 @@ public class HelloApplication extends Application {
                     // If adding a card
                     case 0:
                         addCard(Database.getAddedCard(Board.object.getBoardId()), false);
+                        break;
+                    case 1:
+                        moveCardSignalR(message.get(1), message.get(2), message.get(3), message.get(4));
                 }
             }
         });
@@ -1197,6 +1200,32 @@ public class HelloApplication extends Application {
 
     }
 
+    public static void moveCardSignalR(int initialColumn, int initialIndex, int finalColumn, int finalIndex) {
+        Issue issue = Database.getCard(finalColumn, finalIndex);
+
+        if (messageSender) {
+            messageSender = false;
+            return;
+        }
+
+        // Remove card from source column
+        Board.object.columns.get(initialColumn).cards.remove(initialIndex);
+
+        // Add card to target column
+        Board.object.columns.get(finalColumn).cards.add(finalIndex, issue);
+
+        // Store a deepcopy of the changed columns
+        originalColumns = new ArrayList<>();
+        MultiColumnListView.ListViewColumn<Issue> listViewColumn;
+        for (MultiColumnListView.ListViewColumn<Issue> column : columns) {
+            listViewColumn = new MultiColumnListView.ListViewColumn<Issue>();
+            for (Issue copiedIssue : column.getItems()) {
+                listViewColumn.getItems().add(copiedIssue);
+            }
+            originalColumns.add(listViewColumn);
+        }
+    }
+
     public static void moveCard() {
         int initialColumnIndex = -1;
         int initialItemIndex = -1;
@@ -1272,6 +1301,9 @@ public class HelloApplication extends Application {
         // Update database
         System.out.println("Updating database");
         Database.updateBoard();
+
+        int[] numbers = { 1, initialColumnIndex, initialItemIndex, finalColumnIndex, finalItemIndex };
+        signalR.sendMessage(Board.object.getBoardId(), numbers);
     }
 
     public static void main(String[] args) {
