@@ -90,7 +90,7 @@ public class Database {
             queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
                     .byPage().blockFirst().getResults();
         } else {
-            queryString = "SELECT * FROM c WHERE ARRAY_CONTAINS(c.users, @userEmail)";
+            queryString = "SELECT * FROM c WHERE userEmails_CONTAINS(c.users, @userEmail)";
             sqlParameters = Collections.singletonList(new SqlParameter("@userEmail", email));
             sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
 
