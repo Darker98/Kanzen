@@ -1210,9 +1210,11 @@ public class HelloApplication extends Application {
 
         // Remove card from source column
         Board.object.columns.get(initialColumn).cards.remove(initialIndex);
+        columns.get(initialColumn).getItems().remove(initialIndex);
 
         // Add card to target column
         Board.object.columns.get(finalColumn).cards.add(finalIndex, issue);
+        columns.get(finalColumn).getItems().add(issue);
 
         // Store a deepcopy of the changed columns
         originalColumns = new ArrayList<>();
