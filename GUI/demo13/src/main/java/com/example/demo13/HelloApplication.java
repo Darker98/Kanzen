@@ -1157,7 +1157,6 @@ public class HelloApplication extends Application {
             Database.updateBoard();
             int[] numbers = { 0 };
             signalR.sendMessage(Board.object.getBoardId(), numbers);
-
         }
     }
 

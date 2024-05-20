@@ -46,6 +46,7 @@ public class SignalRClient {
 
     public void sendMessage(String boardId, int[] numbers) {
         hubConnection.send("SendMessage", boardId, numbers);
+        HelloApplication.messageSender = true;
         System.out.println("Message sent...");
     }
 

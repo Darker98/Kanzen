@@ -148,6 +148,8 @@ public class Database {
                 .byPage().blockFirst().getResults();
 
         Card card = queryResult.getFirst();
+
+        System.out.println("Adding card...");
         return ((HelloApplication.Issue) card);
     }
 
