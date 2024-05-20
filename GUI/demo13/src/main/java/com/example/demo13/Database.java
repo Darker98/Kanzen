@@ -86,7 +86,7 @@ public class Database {
             sqlParameters = Collections.singletonList(new SqlParameter("@email", email));
             sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
             queryOptions = new CosmosQueryRequestOptions()
-                    .setPartitionKey(new PartitionKey(boardId));
+                    .setPartitionKey(new PartitionKey(email));
             queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
                     .byPage().blockFirst().getResults();
         } else {
@@ -95,11 +95,11 @@ public class Database {
             sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
 
             // Since we do not have a specific partition key to filter on, the partition key is omitted
-                        queryOptions = new CosmosQueryRequestOptions();
+            queryOptions = new CosmosQueryRequestOptions();
 
             // Execute the query
-                        queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
-                                .byPage().blockFirst().getResults();
+            queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
+                    .byPage().blockFirst().getResults();
         }
 
         Board board;
