@@ -21,7 +21,7 @@ public class SignalRClient {
         hubConnection.on("ReceiveMessage", (message) -> {
             System.out.println("Received message: " + message);
             // Process your incoming message here
-        }, String.class);
+        }, int[].class);
 
         hubConnection.start().blockingAwait();
         System.out.println("Connected to hub...");
@@ -34,7 +34,7 @@ public class SignalRClient {
         }
     }
 
-    public static void sendMessage(String boardId, List<Integer> numbers) {
+    public static void sendMessage(String boardId, int[] numbers) {
         hubConnection.send("SendMessage", boardId, numbers);
         System.out.println("Message sent...");
     }
@@ -51,10 +51,10 @@ public class SignalRClient {
     public static void main(String[] args) {
         start();
         joinGroup("111");
-        List<Integer> numbers = new ArrayList<>();
-        numbers.add(1);
-        numbers.add(2);
-        numbers.add(3);
+        int[] numbers = new int[3];
+        numbers[0] = 1;
+        numbers[1] = 2;
+        numbers[2] = 3;
 
         sendMessage("111", numbers);
     }
