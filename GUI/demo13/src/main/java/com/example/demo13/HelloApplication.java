@@ -562,6 +562,7 @@ public class HelloApplication extends Application {
 
                 initialColumns();
                 initialCards();
+                signalR.joinGroup(Board.object.getBoardId());
 
                 stage.setTitle("KanZen");
                 stage.setScene(scene);
@@ -591,6 +592,7 @@ public class HelloApplication extends Application {
 
                     initialColumns();
                     initialCards();
+                    signalR.joinGroup(Board.object.getBoardId());
 
                     stage.setTitle("KanZen");
                     stage.setScene(scene);
