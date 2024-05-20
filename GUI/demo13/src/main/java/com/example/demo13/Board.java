@@ -2,11 +2,12 @@ package com.example.demo13;
 
 import java.util.ArrayList;
 
-public class Board {
+public class  Board {
     public static Board object;
     public String id;
     public ArrayList<Column> columns;
     public ArrayList<String> userEmails;
+    public String managerEmail;
 
     public Board() {
         object = this;
@@ -17,7 +18,6 @@ public class Board {
         this.id = id;
         columns = new ArrayList<Column>();
         userEmails = new ArrayList<String>();
-
         object = this;
 
         System.out.println(id);
