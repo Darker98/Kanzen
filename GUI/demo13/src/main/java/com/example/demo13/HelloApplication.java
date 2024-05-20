@@ -84,11 +84,14 @@ public class HelloApplication extends Application {
         signalR.addMessageListener(new SignalRMessageListener() {
             @Override
             public void onMessageReceived(List<Integer> message) {
+                System.out.println("In listner...");
+
                 if (messageSender) {
                     messageSender = false;
                     return;
                 }
-                
+
+                System.out.println(message.get(0));
                 switch (message.get(0)) {
                     // If adding a card
                     case 0:

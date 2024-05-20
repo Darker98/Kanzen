@@ -10,7 +10,9 @@ public class  Board {
     public String managerEmail;
 
     public Board() {
-        object = this;
+        if (object == null) {
+            object = this;
+        }
     }
 
     // Constructor
@@ -18,7 +20,10 @@ public class  Board {
         this.id = id;
         columns = new ArrayList<Column>();
         userEmails = new ArrayList<String>();
-        object = this;
+
+        if (object == null) {
+            object = this;
+        }
 
         System.out.println(id);
     }
@@ -29,7 +34,9 @@ public class  Board {
         this.columns = columns;
         this.userEmails = users;
 
-        object = this;
+        if (object == null) {
+            object = this;
+        }
     }
 
     // Getter for boardId

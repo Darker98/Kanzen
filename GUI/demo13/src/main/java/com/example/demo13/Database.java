@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class Database {
@@ -79,14 +80,16 @@ public class Database {
         System.out.println("Querying board");
 
         // Query the record
-        // Query by id if Manager
+        // Query by managerEmail if Manager
         // Query by email if Member
-        if (AuthenticationCaller.status.equals("Manager")) {
+
+        System.out.println(status);
+        if (Objects.equals(status, "Manager")) {
             queryString = "SELECT * FROM c WHERE c.managerEmail = @email";
             sqlParameters = Collections.singletonList(new SqlParameter("@email", email));
             sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
             queryOptions = new CosmosQueryRequestOptions()
-                    .setPartitionKey(new PartitionKey(email));
+                    .setPartitionKey(new PartitionKey(boardId));
             queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
                     .byPage().blockFirst().getResults();
         } else {
@@ -106,7 +109,7 @@ public class Database {
         // If not exist
         if (queryResult.isEmpty()) {
             // Make a new board if it is a manager login
-            if (AuthenticationCaller.status.equals("Manager")) {
+            if (status == ("Manager")) {
                 System.out.println("Creating board");
                 board = new Board(boardId);
                 board.managerEmail = email;
@@ -139,18 +142,18 @@ public class Database {
     }
 
     public static HelloApplication.Issue getAddedCard(String boardId) {
-        String queryString = "SELECT c.columns[0].cards[-1] AS card WHERE c.id = @boardId";
+        System.out.println("Adding card...");
+
+        String queryString = "SELECT * FROM c WHERE c.id = @boardId";
         List<SqlParameter> sqlParameters = Collections.singletonList(new SqlParameter("@boardId", boardId));
         SqlQuerySpec sqlQuerySpec = new SqlQuerySpec(queryString, sqlParameters);
         CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions()
-                .setPartitionKey(new PartitionKey(User.object.boardId));
-        List<Card> queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Card.class)
+                .setPartitionKey(new PartitionKey(Board.object.getBoardId()));
+        List<Board> queryResult = boards.queryItems(sqlQuerySpec, queryOptions, Board.class)
                 .byPage().blockFirst().getResults();
 
-        Card card = queryResult.getFirst();
-
-        System.out.println("Adding card...");
-        return ((HelloApplication.Issue) card);
+        Board board = queryResult.getFirst();
+        return ((HelloApplication.Issue) board.columns.getFirst().cards.getLast());
     }
 
     public static synchronized void updateBoard() {
