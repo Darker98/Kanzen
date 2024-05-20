@@ -411,7 +411,7 @@ public class HelloApplication extends Application {
         invite_member.setOnMouseExited(event->{
             invite_member.setStyle("-fx-background-color:#0598ff;");
         });
-        
+
         invite_member.setOnAction(Event -> {
             TextInputDialog dialog = new TextInputDialog();
             Optional<String> email = dialog.showAndWait();
@@ -585,7 +585,7 @@ public class HelloApplication extends Application {
                 stage.setTitle("KanZen");
                 stage.setScene(scene);
                 stage.getIcons().add(kanzen_logo);
-                //stage.setFullScreen(true);
+                stage.setFullScreen(true);
                 stage.setWidth(1200);
                 //  multiColumnListView.setSeparatorFactory(null);
 
@@ -615,7 +615,7 @@ public class HelloApplication extends Application {
                     stage.setTitle("KanZen");
                     stage.setScene(scene);
                     stage.getIcons().add(kanzen_logo);
-                    //stage.setFullScreen(true);
+                    stage.setFullScreen(true);
                     stage.setWidth(1200);
                     //  multiColumnListView.setSeparatorFactory(null);
                     stage.setHeight(800);
