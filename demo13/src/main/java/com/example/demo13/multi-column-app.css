@@ -1,0 +1,134 @@
+.root {
+    -slate-green: #63946a;
+    -yellowish-orange: #ffa208;
+    -tomato: #e94b35;
+    -blue: #4a90e2;
+}
+
+.issue-list-cell {
+    -fx-background-color: transparent;
+    -fx-pref-height: 135px;
+    -fx-padding: 10px;
+
+
+}
+
+#manager_btn: hover{
+-fx-background-color: ##fffffff;
+}
+
+.issue-list-cell .content {
+    -fx-background-color: #e0e0e0;
+    -fx-shadow: dropshadow(gaussian, rgba(255, 0, 0, .26), 10, 0.12, -1, 2);
+    -fx-background-radius: 4px;
+}
+
+.issue-list-cell.todo .content {
+    -fx-background-color: -blue;
+}
+
+.issue-list-cell.in-progress .content {
+    -fx-background-color: -yellowish-orange;
+}
+
+.issue-list-cell.done .content {
+    -fx-background-color: -slate-green;
+}
+
+.issue-list-cell.important .content {
+    -fx-background-color: #e32b2b;
+}
+
+
+
+.issue-list-cell .label {
+    -fx-font-size: 1.5em;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.issue-list-cell .placeholder {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2px;
+    -fx-border-style: dashed;
+}
+
+.issue-list-cell:from {
+}
+
+.issue-list-cell:to {
+}
+
+.column-header{
+-fx-font-size: 40px;
+-fx-alignment: center;
+-fx-font-family: "Futura";
+-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #7dcbf5 0%, #f4f4f4 70%);
+
+}
+
+
+
+.column-header-backlog {
+    -fx-background-color: #FFD700; /* Gold */
+    -fx-font-size: 50px;
+    -fx-alignment: center;
+    -fx-font-family: "Times New Roman";
+    -fx-text-fill:"#ffffff";
+    -fx-background-radius: 10px;
+}
+
+.column-header-todo {
+        -fx-background-color: #FF4500; /* Orange Red */
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+
+}
+
+.column-header-in-progress {
+    -fx-background-color: #0598ff; /* Dodger Blue */
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+}
+
+.column-header-done {
+      -fx-background-color: #32CD32; /* Lime Green */
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+
+}
+
+.column-header-important {
+    -fx-background-color: #f51119
+      -fx-font-size: 50px;
+       -fx-alignment: center;
+          -fx-font-family: "Times New Roman";
+            -fx-text-fill:"#ffffff";
+            -fx-background-radius: 10px;
+}
+
+.dialog-pane {
+    -fx-background-color: black;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+}
+
+.dialog-pane:header .header-panel {
+    -fx-background-color: black;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-font-style: italic;
+    -fx-font-size: 2em;
+}

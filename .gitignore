@@ -271,3 +271,6 @@ paket-files/
 
 # Active Directory .NET files
 active-directory-dotnet-desktop-msgraph-v2-msal3x/
+
+.vscode/
+GUI/
